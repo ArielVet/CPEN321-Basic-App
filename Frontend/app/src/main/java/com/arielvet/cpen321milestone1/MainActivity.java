@@ -2,6 +2,7 @@ package com.arielvet.cpen321milestone1;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -9,7 +10,7 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
 
-    //Permissions Stuff
+    // Button Declaration
     private Button favouriteCity;
     private Button phoneDetails;
     private Button serverInfo;
@@ -22,12 +23,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Button 1
+        // Button 1: Puts pin on mpa of favourite City
         favouriteCity = findViewById(R.id.favourite_city_button);
         favouriteCity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "My Fav City");
+
+                Intent cityOnMap = new Intent(MainActivity.this, FaveCity.class);
+                startActivity(cityOnMap);
             }
         });
 
