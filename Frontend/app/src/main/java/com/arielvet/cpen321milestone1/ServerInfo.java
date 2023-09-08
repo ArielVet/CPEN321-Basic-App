@@ -15,20 +15,43 @@ import com.google.android.gms.tasks.Task;
 
 public class ServerInfo extends AppCompatActivity {
 
+    // Activity Name
     private static final String TAG = "ServerInfo";
+
     // Google Sign In Variables
     private GoogleSignInClient mGoogleSignInClient;
     private static final int RC_SIGN_IN = 1;
+
+    // Displayed Data
+    private String public_IP_Address;
+    private String client_IP_address;
+    private String server_local_time;
+    private String client_local_time;
+    private String backend_Name;
+    private String signIn_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_server_info);
 
+        // Set Up the google account and sign in
         googleSetUp();
         signIn();
 
+
     }
+
+    /* Helping Functions */
+    /**
+     * Purpose: Function is called only after the user signs in to the app.
+     *          It makes API calls to the server and saves the data to local variables
+     */
+    private void makeAPICalls() {
+
+    }
+
+    /* Google Handler Functions */
 
     /**
      * Purpose: Function configures the google sign in to request certain info and
@@ -54,7 +77,7 @@ public class ServerInfo extends AppCompatActivity {
         // Check for existing Google Sign In account, if the user is already signed in
         // the GoogleSignInAccount will be non-null.
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        handleAccount(account);
+        updateAccount(account);
     }
 
     /**
@@ -85,31 +108,33 @@ public class ServerInfo extends AppCompatActivity {
 
     /**
      * Purpose: Once we confirm the logIn is successful using onActivityResult(),
-     *          the function gets the associated account and calls handleAccount()
+     *          the function gets the associated account and calls updateAccount()
      */
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
 
             // Signed in successfully, show authenticated UI.
-            handleAccount(account);
+            updateAccount(account);
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
             Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
-            handleAccount(null);
+            updateAccount(null);
         }
     }
 
     /**
-     * Purpose: Function utilises the account data
+     * Purpose: Function saves the User's Name from the account and connects to the back-end
      */
-    private void handleAccount(GoogleSignInAccount account) {
+    private void updateAccount(GoogleSignInAccount account) {
         if (account == null){
             Log.d(TAG, "No Users Signed In");
         }
         else {
-            Log.d(TAG, "Pref Name: " + account.getDisplayName());
+            signIn_name = account.getDisplayName();
+            Log.d(TAG, signIn_name);
+            makeAPICalls();
         }
     }
 }

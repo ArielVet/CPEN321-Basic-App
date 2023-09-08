@@ -32,8 +32,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        /* Buttons click handlers */
-
         // Button 1: Puts pin on mpa of favourite City
         favouriteCity = findViewById(R.id.favourite_city_button);
         favouriteCity.setOnClickListener(new View.OnClickListener() {
