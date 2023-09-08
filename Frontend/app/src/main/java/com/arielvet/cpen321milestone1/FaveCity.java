@@ -40,6 +40,6 @@ public class FaveCity extends FragmentActivity implements OnMapReadyCallback {
 
         LatLng zurich = new LatLng(47.3769, 8.5417);
         mMap.addMarker(new MarkerOptions().position(zurich).title("My Favourite City: Zurich")).showInfoWindow();
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(zurich, 4));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(zurich));
     }
 }

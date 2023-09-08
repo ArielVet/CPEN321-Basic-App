@@ -1,12 +1,19 @@
 package com.arielvet.cpen321milestone1;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -41,6 +48,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "My Phone Details");
+
+                Intent phoneDetails = new Intent(MainActivity.this, PhoneDetails.class);
+                startActivity(phoneDetails);
             }
         });
 
@@ -62,4 +72,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+
+
 }
