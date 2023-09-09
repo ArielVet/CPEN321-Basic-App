@@ -11,9 +11,7 @@ app.get('/ipAddress', (req, res) => {
 
 // Server time as a a string
 app.get('/time', (req, res) => {
-    // Chose one or other
-    const time = new Date().toLocaleTimeString();
-    // const time = new Date().toString();
+    const time = new Date().toLocaleTimeString("en-UK");
     res.send({data : time});
 });
 

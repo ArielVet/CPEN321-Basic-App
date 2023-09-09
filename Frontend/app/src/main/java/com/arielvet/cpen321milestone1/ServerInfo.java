@@ -1,10 +1,15 @@
 package com.arielvet.cpen321milestone1;
 
+
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -21,7 +26,9 @@ import com.google.android.gms.tasks.Task;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class ServerInfo extends AppCompatActivity {
 
@@ -36,14 +43,13 @@ public class ServerInfo extends AppCompatActivity {
     private GoogleSignInClient mGoogleSignInClient;
     private static final int RC_SIGN_IN = 1;
 
-
     // Displayed Data
-    private String public_IP_Address;
-    private String client_IP_address;
-    private String server_local_time;
-    private String client_local_time;
-    private String backend_Name;
-    private String signIn_name;
+    private TextView server_ip;
+    private TextView client_ip;
+    private TextView server_time;
+    private TextView client_time;
+    private TextView backend_Name;
+    private TextView logged_in_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +57,7 @@ public class ServerInfo extends AppCompatActivity {
         setContentView(R.layout.activity_server_info);
 
         // Set Up the google account and sign in
+        // Once User is signed in, app will update the TextView Values on the main screen
         googleSetUp();
         signIn();
 
@@ -61,55 +68,78 @@ public class ServerInfo extends AppCompatActivity {
     
 
     /**
-     * Purpose: Function is called only after the user signs in to the app.
-     *          It makes API calls to the server and saves the data to local variables
+     * Purpose:
      */
-    private void updateData() {
-        String url = HOST + ":" + PORT.toString();
+    @SuppressLint("SetTextI18n")
+    private void updateUI(String accountName) {
 
-        makeAPICall(url + "/ipAddress", new Callback() {
-            @Override
-            public void onSuccess(String val) {
-                public_IP_Address = val;
-            }
+        /* Sets Up and Updates the TextViews */
+        server_ip = findViewById(R.id.server_ip_text);
+        fetchAPIValue("/ipAddress", server_ip, getString(R.string.server_ip_cap));
 
-            @Override
-            public void onError(){
-                public_IP_Address = DEFAULT_TEXT;
-            }
-        });
+        client_ip = findViewById(R.id.client_ip_text);
+        client_ip.setText(getString(R.string.client_ip_cap) + " " + getClientIP());
 
-        makeAPICall(url + "/time", new Callback() {
-            @Override
-            public void onSuccess(String val) {
-                server_local_time = val;
-            }
-            @Override
-            public void onError(){
-                server_local_time = DEFAULT_TEXT;
-            }
-        });
+        server_time = findViewById(R.id.server_time_text);
+        fetchAPIValue("/time", server_time, getString(R.string.server_time_cap));
 
-        makeAPICall(url + "/name", new Callback() {
-            @Override
-            public void onSuccess(String val) {
-                backend_Name = val;
-            }
-            @Override
-            public void onError(){
-                backend_Name = DEFAULT_TEXT;
-            }
-        });
+        client_time = findViewById(R.id.client_time_text);
+        client_time.setText(getString(R.string.client_time_cap) + " " + getTime());
+
+
+        backend_Name = findViewById(R.id.backend_name_text);
+        fetchAPIValue("/name", backend_Name, getString(R.string.backend_name_cap));
+
+        logged_in_name = findViewById(R.id.logged_in_name_text);
+        logged_in_name.setText(getString(R.string.logged_in_name_cap) + " " + accountName);
     }
 
-    // TODO: Repalce the varibales with direct modifications of the textview
+    // https://stackoverflow.com/questions/6064510/how-to-get-ip-address-of-the-device-from-code
+    private String getClientIP(){
+        Context context = getApplicationContext();
+        WifiManager wifiMan = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        int ipAddress = wifiMan.getConnectionInfo().getIpAddress();
+
+        StringBuilder ip = new StringBuilder()
+                .append(ipAddress & 255).append('.')
+                .append((ipAddress >> 8) & 255).append('.')
+                .append((ipAddress >> 16) & 255).append('.')
+                .append((ipAddress >> 24) & 255).append('.');
+
+        return ip.toString();
+    }
+
+    private String getTime(){
+        DateTimeFormatter prefFormat = DateTimeFormatter.ofPattern("HH:mm:ss");
+        LocalDateTime currTime = LocalDateTime.now();
+        return currTime.format(prefFormat);
+    }
+
+    private void fetchAPIValue (String endpoint, TextView textElement, String prefixText){
+
+        makeGetRequest(HOST + ":" + PORT.toString() + endpoint, new Callback() {
+            @Override
+            public void onSuccess(String val) {
+                textElement.setText(prefixText + " " + val);
+            }
+
+            @Override
+            public void onError(){
+                server_ip.setText(prefixText + " " + DEFAULT_TEXT);
+            }
+        });
+
+    }
+
+
+
 //    https://stackoverflow.com/questions/18051276/return-a-value-from-asynchronous-call-to-run-method
 //    https://www.geeksforgeeks.org/how-to-make-an-http-request-with-android/
 //    https://www.geeksforgeeks.org/android-cleartext-http-traffic-not-permitted/
     /**
      * Purpose: Makes an API Call
      * */
-    private void makeAPICall(String url, Callback cb) {
+    private void makeGetRequest(String url, Callback cb) {
         RequestQueue volleyQueue = Volley.newRequestQueue(ServerInfo.this);
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
@@ -133,6 +163,8 @@ public class ServerInfo extends AppCompatActivity {
         void onSuccess(String val);
         void onError();
     }
+
+
 
     /* Google Handler Functions */
 
@@ -179,33 +211,31 @@ public class ServerInfo extends AppCompatActivity {
 
     /**
      * Purpose: Once we confirm the logIn is successful using onActivityResult(),
-     *          the function gets the associated account and calls updateAccount()
+     *          the function gets the associated account and calls getAccountInfo()
      */
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
 
             // Signed in successfully, show authenticated UI.
-            updateAccount(account);
+            getAccountInfo(account);
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
             Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
-            updateAccount(null);
+            getAccountInfo(null);
         }
     }
 
     /**
      * Purpose: Function saves the User's Name from the account and connects to the back-end
      */
-    private void updateAccount(GoogleSignInAccount account) {
+    private void getAccountInfo(GoogleSignInAccount account) {
         if (account == null){
             Log.d(TAG, "No Users Signed In");
         }
         else {
-            signIn_name = account.getDisplayName();
-            Log.d(TAG, signIn_name);
-            updateData();
+            updateUI(account.getDisplayName());
         }
     }
 }

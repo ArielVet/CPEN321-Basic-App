@@ -10,4 +10,11 @@
     <string name="curr_city_cap">Your Current City: </string>
     <string name="manuf_cap">Phone Manufacturer: </string>
     <string name="model_cap">Phone Model: </string>
+
+    <string name="server_ip_cap">Server IP Address: </string>
+    <string name="client_ip_cap">Client IP Address: </string>
+    <string name="server_time_cap">Server Local Time: </string>
+    <string name="client_time_cap">Client Local Time: </string>
+    <string name="backend_name_cap">My Name: </string>
+    <string name="logged_in_name_cap">Logged In As: </string>
 </resources>
