@@ -5,6 +5,7 @@ app.use(express.json());
 
 // App route to return server IP
 app.get('/ipAddress', (req, res) => {
+    // Static IP of VM, will not change
     const ip = "20.63.36.199";
     res.send({data: ip});
 });
