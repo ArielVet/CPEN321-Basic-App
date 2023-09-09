@@ -34,7 +34,7 @@ public class ServerInfo extends AppCompatActivity {
     // CONSTANTS
     private static final String TAG = "ServerInfo";
     private static final String HOST = "http://10.0.2.2";
-    //    private static final String HOST = "20.63.36.199"; REPLACE ONCE SERVER GOES LIVE
+//        private static final String HOST = "http://20.63.36.199";
     private static final Integer PORT = 8081;
     private static final String DEFAULT_TEXT = "NOT FOUND";
 
