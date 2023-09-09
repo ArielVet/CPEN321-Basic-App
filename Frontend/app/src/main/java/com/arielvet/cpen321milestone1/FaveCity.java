@@ -14,14 +14,11 @@ import com.arielvet.cpen321milestone1.databinding.ActivityFaveCityBinding;
 
 public class FaveCity extends FragmentActivity implements OnMapReadyCallback {
 
-    private GoogleMap mMap;
-    private ActivityFaveCityBinding binding;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = ActivityFaveCityBinding.inflate(getLayoutInflater());
+        ActivityFaveCityBinding binding = ActivityFaveCityBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -36,10 +33,9 @@ public class FaveCity extends FragmentActivity implements OnMapReadyCallback {
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
 
         LatLng zurich = new LatLng(47.3769, 8.5417);
-        mMap.addMarker(new MarkerOptions().position(zurich).title("My Favourite City: Zurich")).showInfoWindow();
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(zurich));
+        googleMap.addMarker(new MarkerOptions().position(zurich).title("My Favourite City: Zurich")).showInfoWindow();
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(zurich));
     }
 }

@@ -42,14 +42,6 @@ public class ServerInfo extends AppCompatActivity {
     private GoogleSignInClient mGoogleSignInClient;
     private static final int RC_SIGN_IN = 1;
 
-    // Displayed Data
-    private TextView server_ip;
-    private TextView client_ip;
-    private TextView server_time;
-    private TextView client_time;
-    private TextView backend_Name;
-    private TextView logged_in_name;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,29 +68,30 @@ public class ServerInfo extends AppCompatActivity {
     private void updateUI(String accountName) {
 
         /* Sets Up and Updates the TextViews */
-        server_ip = findViewById(R.id.server_ip_text);
+        // Displayed Data
+        TextView server_ip = findViewById(R.id.server_ip_text);
         fetchAPIValue("/ipAddress", server_ip, getString(R.string.server_ip_cap));
 
-        client_ip = findViewById(R.id.client_ip_text);
+        TextView client_ip = findViewById(R.id.client_ip_text);
         client_ip.setText(getString(R.string.client_ip_cap) + " " + getClientIP());
 
-        server_time = findViewById(R.id.server_time_text);
+        TextView server_time = findViewById(R.id.server_time_text);
         fetchAPIValue("/time", server_time, getString(R.string.server_time_cap));
 
-        client_time = findViewById(R.id.client_time_text);
+        TextView client_time = findViewById(R.id.client_time_text);
         client_time.setText(getString(R.string.client_time_cap) + " " + getTime());
 
 
-        backend_Name = findViewById(R.id.backend_name_text);
+        TextView backend_Name = findViewById(R.id.backend_name_text);
         fetchAPIValue("/name", backend_Name, getString(R.string.backend_name_cap));
 
-        logged_in_name = findViewById(R.id.logged_in_name_text);
+        TextView logged_in_name = findViewById(R.id.logged_in_name_text);
         logged_in_name.setText(getString(R.string.logged_in_name_cap) + " " + accountName);
     }
 
     /**
      * Purpose: retrieves the IPv4 address of the device
-     *
+     * <p>
      *          Based on: https://stackoverflow.com/questions/6064510/how-to-get-ip-address-of-the-device-from-code
      *
      * @return the IP address
@@ -108,19 +101,15 @@ public class ServerInfo extends AppCompatActivity {
         WifiManager wifiMan = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         int ipAddress = wifiMan.getConnectionInfo().getIpAddress();
 
-        String ip = String.valueOf(ipAddress & 255) + '.' +
+        return String.valueOf(ipAddress & 255) + '.' +
                 ((ipAddress >> 8) & 255) + '.' +
                 ((ipAddress >> 16) & 255) + '.' +
                 ((ipAddress >> 24) & 255) + '.';
-
-        return ip;
     }
 
     /**
      * Purpose: Gets the time on the device in HH:mm:ss format
-     *
      *          Based On: https://www.w3schools.com/java/java_date.asp
-     *
      * @return time as a string
      *
      */
@@ -134,7 +123,6 @@ public class ServerInfo extends AppCompatActivity {
      * Purpose: Definition of the Callback Interface that is used by the
      *          API to export the values retrieved.
      *          Defines functions that are used when the API succeeds/fails
-     *
      *          Design Based on: https://stackoverflow.com/questions/18051276/return-a-value-from-asynchronous-call-to-run-method
      */
     interface Callback {
@@ -162,7 +150,7 @@ public class ServerInfo extends AppCompatActivity {
             @SuppressLint("SetTextI18n")
             @Override
             public void onError(){
-                server_ip.setText(prefixText + " " + DEFAULT_TEXT);
+                textElement.setText(prefixText + " " + DEFAULT_TEXT);
             }
         });
 
@@ -171,9 +159,7 @@ public class ServerInfo extends AppCompatActivity {
     /**
      * Purpose: Make an API call to a desired url and run a corresponding callback function
      *          when the get request succeeds / fails.
-     *
      *          Based On: https://www.geeksforgeeks.org/how-to-make-an-http-request-with-android/
-     *
      * @param url : the url we are making a GET request to
      * @param cb : the callback object that will be called to report the results of the API
      */
@@ -191,9 +177,7 @@ public class ServerInfo extends AppCompatActivity {
                         cb.onError();
                     }
                 },
-                (Response.ErrorListener) error -> {
-                    cb.onError();
-                }
+                (Response.ErrorListener) error -> cb.onError()
         );
         volleyQueue.add(jsonObjectRequest);
     }

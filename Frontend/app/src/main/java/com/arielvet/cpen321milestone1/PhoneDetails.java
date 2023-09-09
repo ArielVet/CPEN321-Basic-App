@@ -9,15 +9,12 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,8 +26,6 @@ import java.util.Locale;
 public class PhoneDetails extends AppCompatActivity {
 
     private TextView cityCap;
-    private TextView manufacturerCap;
-    private TextView modelCap;
 
     private String LocationCap;
 
@@ -54,8 +49,8 @@ public class PhoneDetails extends AppCompatActivity {
 
         //Saves TextView elements to variables
         cityCap = findViewById(R.id.current_city_text);
-        manufacturerCap = findViewById(R.id.manuf_text);
-        modelCap = findViewById(R.id.model_text);
+        TextView manufacturerCap = findViewById(R.id.manuf_text);
+        TextView modelCap = findViewById(R.id.model_text);
 
         //Get the caption for city Location
         LocationCap = getString(R.string.curr_city_cap);
@@ -101,19 +96,13 @@ public class PhoneDetails extends AppCompatActivity {
                 new AlertDialog.Builder(this)
                         .setTitle("Need Location Permissions")
                         .setMessage("Need perms to mark location on map")
-                        .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                Toast.makeText(PhoneDetails.this, "We need location permissions for full functionality", Toast.LENGTH_LONG).show();
-                                dialogInterface.dismiss();
-                            }
+                        .setNegativeButton("CANCEL", (dialogInterface, i) -> {
+                            Toast.makeText(PhoneDetails.this, "We need location permissions for full functionality", Toast.LENGTH_LONG).show();
+                            dialogInterface.dismiss();
                         })
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                ActivityCompat.requestPermissions(PhoneDetails.this, new String[] {LOC_COARSE, LOC_FINE}, 1);
-                            }
-                        })
+                        .setPositiveButton("OK", (dialogInterface, i) ->
+                                ActivityCompat.requestPermissions(PhoneDetails.this, new String[] {LOC_COARSE, LOC_FINE}, 1)
+                        )
                         .create()
                         .show();
             }
@@ -127,26 +116,22 @@ public class PhoneDetails extends AppCompatActivity {
     /**
      * Purpose: Sets up the Geocoder to convert cords -> city and
      *          the location manager/listner to track the cords
-     *
      *          Based On: https://stackoverflow.com/questions/22323974/how-to-get-city-name-by-latitude-longitude-in-android
      */
+    @SuppressLint("SetTextI18n")
     private void setUpLocationServices(){
         //Set up Coordinates to city converter
         geocoder = new Geocoder(this, Locale.getDefault());
 
         // Sets up location Manager and Listner to find location of person.
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        locationListener = new LocationListener() {
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onLocationChanged(Location location) {
-                // Find coordinates of person, converts it to city, and updates city caption
-                try {
-                    List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-                    cityCap.setText(LocationCap + " " + addresses.get(0).getLocality());
-                } catch (IOException e) {
-                    cityCap.setText(LocationCap + " " + NoLoc);
-                }
+        locationListener = location -> {
+            // Find coordinates of person, converts it to city, and updates city caption
+            try {
+                List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                cityCap.setText(LocationCap + " " + addresses.get(0).getLocality());
+            } catch (IOException e) {
+                cityCap.setText(LocationCap + " " + NoLoc);
             }
         };
     }
