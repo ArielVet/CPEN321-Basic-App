@@ -59,7 +59,7 @@ public class ServerInfo extends AppCompatActivity {
 
     /* Helping Functions */
     
-    
+
     /**
      * Purpose: Function is called only after the user signs in to the app.
      *          It makes API calls to the server and saves the data to local variables
@@ -102,7 +102,10 @@ public class ServerInfo extends AppCompatActivity {
         });
     }
 
-    // TODO: Chat GPT Credit
+    // TODO: Repalce the varibales with direct modifications of the textview
+//    https://stackoverflow.com/questions/18051276/return-a-value-from-asynchronous-call-to-run-method
+//    https://www.geeksforgeeks.org/how-to-make-an-http-request-with-android/
+//    https://www.geeksforgeeks.org/android-cleartext-http-traffic-not-permitted/
     /**
      * Purpose: Makes an API Call
      * */
