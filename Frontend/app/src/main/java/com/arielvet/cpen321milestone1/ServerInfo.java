@@ -21,17 +21,13 @@ import com.google.android.gms.tasks.Task;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.atomic.AtomicReference;
 
 
 public class ServerInfo extends AppCompatActivity {
 
     // CONSTANTS
     private static final String TAG = "ServerInfo";
-    private static final String HOST = "https://localhost";
+    private static final String HOST = "http://10.0.2.2";
     //    private static final String HOST = "20.63.36.199"; REPLACE ONCE SERVER GOES LIVE
     private static final Integer PORT = 8081;
     private static final String DEFAULT_TEXT = "NOT FOUND";
@@ -79,18 +75,57 @@ public class ServerInfo extends AppCompatActivity {
 
         backend_Name = makeAPICall(url + "/name");
         Log.d(TAG, backend_Name);
-
     }
 
     // TODO: Chat GPT Credit
     /**
      * Purpose: Makes an API Call
      * */
-    private static String makeAPICall(String url) {
+    private String makeAPICall(String url) {
+        RequestQueue volleyQueue = Volley.newRequestQueue(ServerInfo.this);
 
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET,
+                url,
+                null,
+                (Response.Listener<JSONObject>) response -> {
+                    try {
+                        Log.d(TAG, response.getString("data"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                },
+                (Response.ErrorListener) error -> {
+                    Log.e("MainActivity", "loadDogImage error: ${error.localizedMessage}");
+                }
+        );
+        volleyQueue.add(jsonObjectRequest);
+        return "x";
     }
+    private void loadDogImage() {
 
+        RequestQueue volleyQueue = Volley.newRequestQueue(ServerInfo.this);
+        String url = "http://10.0.2.2:8081/name";
 
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET,
+                url,
+                null,
+                (Response.Listener<JSONObject>) response -> {
+                    String dogImageUrl;
+                    try {
+                        dogImageUrl = response.getString("name");
+                        Log.d(TAG, dogImageUrl);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                },
+                (Response.ErrorListener) error -> {
+                    Log.e("MainActivity", "loadDogImage error: ${error.localizedMessage}");
+                }
+        );
+        volleyQueue.add(jsonObjectRequest);
+    }
 
     /* Google Handler Functions */
 
@@ -107,18 +142,6 @@ public class ServerInfo extends AppCompatActivity {
 
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-    }
-
-    /**
-     * Purpose: Function checks if a user has already signed in with Google
-     */
-    @Override
-    protected void onStart() {
-        super.onStart();
-        // Check for existing Google Sign In account, if the user is already signed in
-        // the GoogleSignInAccount will be non-null.
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        updateAccount(account);
     }
 
     /**
