@@ -68,13 +68,13 @@ public class ServerInfo extends AppCompatActivity {
         String url = HOST + ":" + PORT.toString();
 
         public_IP_Address = makeAPICall(url + "/ipAddress");
-        Log.d(TAG, public_IP_Address);
+        Log.d(TAG, "public_IP_Address");
 
         server_local_time = makeAPICall(url + "/time");
-        Log.d(TAG, server_local_time);
+        Log.d(TAG, "server_local_time");
 
         backend_Name = makeAPICall(url + "/name");
-        Log.d(TAG, backend_Name);
+        Log.d(TAG, "backend_Name");
     }
 
     // TODO: Chat GPT Credit
@@ -101,30 +101,6 @@ public class ServerInfo extends AppCompatActivity {
         );
         volleyQueue.add(jsonObjectRequest);
         return "x";
-    }
-    private void loadDogImage() {
-
-        RequestQueue volleyQueue = Volley.newRequestQueue(ServerInfo.this);
-        String url = "http://10.0.2.2:8081/name";
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                Request.Method.GET,
-                url,
-                null,
-                (Response.Listener<JSONObject>) response -> {
-                    String dogImageUrl;
-                    try {
-                        dogImageUrl = response.getString("name");
-                        Log.d(TAG, dogImageUrl);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                },
-                (Response.ErrorListener) error -> {
-                    Log.e("MainActivity", "loadDogImage error: ${error.localizedMessage}");
-                }
-        );
-        volleyQueue.add(jsonObjectRequest);
     }
 
     /* Google Handler Functions */
