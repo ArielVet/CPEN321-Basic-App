@@ -129,7 +129,8 @@ public class PhoneDetails extends AppCompatActivity {
             // Find coordinates of person, converts it to city, and updates city caption
             try {
                 List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-                cityCap.setText(LocationCap + " " + addresses.get(0).getLocality());
+                String name = (addresses != null ? addresses.get(0).getLocality() : NoLoc);
+                cityCap.setText(LocationCap + " " + name);
             } catch (IOException e) {
                 cityCap.setText(LocationCap + " " + NoLoc);
             }
