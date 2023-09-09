@@ -67,21 +67,46 @@ public class ServerInfo extends AppCompatActivity {
     private void updateData() {
         String url = HOST + ":" + PORT.toString();
 
-        public_IP_Address = makeAPICall(url + "/ipAddress");
-        Log.d(TAG, "public_IP_Address");
+        makeAPICall(url + "/ipAddress", new Callback() {
+            @Override
+            public void onSuccess(String val) {
+                public_IP_Address = val;
+            }
 
-        server_local_time = makeAPICall(url + "/time");
-        Log.d(TAG, "server_local_time");
+            @Override
+            public void onError(){
+                public_IP_Address = DEFAULT_TEXT;
+            }
+        });
 
-        backend_Name = makeAPICall(url + "/name");
-        Log.d(TAG, "backend_Name");
+        makeAPICall(url + "/time", new Callback() {
+            @Override
+            public void onSuccess(String val) {
+                server_local_time = val;
+            }
+            @Override
+            public void onError(){
+                server_local_time = DEFAULT_TEXT;
+            }
+        });
+
+        makeAPICall(url + "/name", new Callback() {
+            @Override
+            public void onSuccess(String val) {
+                backend_Name = val;
+            }
+            @Override
+            public void onError(){
+                backend_Name = DEFAULT_TEXT;
+            }
+        });
     }
 
     // TODO: Chat GPT Credit
     /**
      * Purpose: Makes an API Call
      * */
-    private String makeAPICall(String url) {
+    private void makeAPICall(String url, Callback cb) {
         RequestQueue volleyQueue = Volley.newRequestQueue(ServerInfo.this);
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
@@ -90,17 +115,20 @@ public class ServerInfo extends AppCompatActivity {
                 null,
                 (Response.Listener<JSONObject>) response -> {
                     try {
-                        Log.d(TAG, response.getString("data"));
+                        cb.onSuccess(response.getString("data"));
                     } catch (JSONException e) {
-                        e.printStackTrace();
+                        cb.onError();
                     }
                 },
                 (Response.ErrorListener) error -> {
-                    Log.e("MainActivity", "loadDogImage error: ${error.localizedMessage}");
+                    cb.onError();
                 }
         );
         volleyQueue.add(jsonObjectRequest);
-        return "x";
+    }
+    interface Callback {
+        void onSuccess(String val);
+        void onError();
     }
 
     /* Google Handler Functions */
