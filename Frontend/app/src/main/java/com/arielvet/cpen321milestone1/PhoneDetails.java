@@ -47,7 +47,7 @@ public class PhoneDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_phone_details);
 
-        // Requests the user for permissions if they havent been given yet
+        // Requests the user for permissions if they haven't been given yet
         requestLocationPermissions();
 
         setUpLocationServices();
@@ -84,9 +84,9 @@ public class PhoneDetails extends AppCompatActivity {
                 && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED);
     }
 
-    /**  Purpose: Functions requests location Permissions
-     *   Returns: void
-     * */
+    /**
+     * Purpose: Functions requests location Permissions
+     */
     private void requestLocationPermissions() {
 
         String LOC_COARSE = android.Manifest.permission.ACCESS_COARSE_LOCATION;
@@ -97,7 +97,7 @@ public class PhoneDetails extends AppCompatActivity {
             // If either permission is denied run code
             if(ActivityCompat.shouldShowRequestPermissionRationale(this, LOC_COARSE) || ActivityCompat.shouldShowRequestPermissionRationale(this, LOC_FINE)) {
 
-                // Now that they dont have permission anymore, e gotta re request it
+                // Now that they don't have permission anymore, e gotta re request it
                 new AlertDialog.Builder(this)
                         .setTitle("Need Location Permissions")
                         .setMessage("Need perms to mark location on map")
@@ -128,6 +128,7 @@ public class PhoneDetails extends AppCompatActivity {
      * Purpose: Sets up the Geocoder to convert cords -> city and
      *          the location manager/listner to track the cords
      *
+     *          Based On: https://stackoverflow.com/questions/22323974/how-to-get-city-name-by-latitude-longitude-in-android
      */
     private void setUpLocationServices(){
         //Set up Coordinates to city converter
@@ -136,11 +137,11 @@ public class PhoneDetails extends AppCompatActivity {
         // Sets up location Manager and Listner to find location of person.
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         locationListener = new LocationListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onLocationChanged(Location location) {
                 // Find coordinates of person, converts it to city, and updates city caption
                 try {
-                    // TODO: Add Stack Overflow Credit
                     List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
                     cityCap.setText(LocationCap + " " + addresses.get(0).getLocality());
                 } catch (IOException e) {
@@ -150,11 +151,10 @@ public class PhoneDetails extends AppCompatActivity {
         };
     }
 
-    //TODO: ADD Chat GPT Credit
     /**
      * Purpose: Once the user interacts with the permission box, check if they have permissions, if they do
      *          if they do, run the location listener to get city names
-     * */
+     */
     @SuppressLint("MissingPermission")
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

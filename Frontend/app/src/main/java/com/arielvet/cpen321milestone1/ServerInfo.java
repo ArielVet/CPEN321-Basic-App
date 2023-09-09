@@ -26,7 +26,6 @@ import com.google.android.gms.tasks.Task;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -56,19 +55,22 @@ public class ServerInfo extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_server_info);
 
-        // Set Up the google account and sign in
-        // Once User is signed in, app will update the TextView Values on the main screen
+        // Set Up the google instances
         googleSetUp();
+
+        // Triggers the sign in process. Once a successful sign in occurs, updateUI() is called
+        // and the TextViews on the screen update with the correct values.
         signIn();
 
 
     }
 
     /* Helping Functions */
-    
 
     /**
-     * Purpose:
+     * Purpose: Function Updates the TextElements on the screen with their associated values
+     *
+     * @param accountName : the name attached to the account that just logged in
      */
     @SuppressLint("SetTextI18n")
     private void updateUI(String accountName) {
@@ -94,35 +96,70 @@ public class ServerInfo extends AppCompatActivity {
         logged_in_name.setText(getString(R.string.logged_in_name_cap) + " " + accountName);
     }
 
-    // https://stackoverflow.com/questions/6064510/how-to-get-ip-address-of-the-device-from-code
+    /**
+     * Purpose: retrieves the IPv4 address of the device
+     *
+     *          Based on: https://stackoverflow.com/questions/6064510/how-to-get-ip-address-of-the-device-from-code
+     *
+     * @return the IP address
+     */
     private String getClientIP(){
         Context context = getApplicationContext();
         WifiManager wifiMan = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         int ipAddress = wifiMan.getConnectionInfo().getIpAddress();
 
-        StringBuilder ip = new StringBuilder()
-                .append(ipAddress & 255).append('.')
-                .append((ipAddress >> 8) & 255).append('.')
-                .append((ipAddress >> 16) & 255).append('.')
-                .append((ipAddress >> 24) & 255).append('.');
+        String ip = String.valueOf(ipAddress & 255) + '.' +
+                ((ipAddress >> 8) & 255) + '.' +
+                ((ipAddress >> 16) & 255) + '.' +
+                ((ipAddress >> 24) & 255) + '.';
 
-        return ip.toString();
+        return ip;
     }
 
+    /**
+     * Purpose: Gets the time on the device in HH:mm:ss format
+     *
+     *          Based On: https://www.w3schools.com/java/java_date.asp
+     *
+     * @return time as a string
+     *
+     */
     private String getTime(){
         DateTimeFormatter prefFormat = DateTimeFormatter.ofPattern("HH:mm:ss");
         LocalDateTime currTime = LocalDateTime.now();
         return currTime.format(prefFormat);
     }
 
+    /**
+     * Purpose: Definition of the Callback Interface that is used by the
+     *          API to export the values retrieved.
+     *          Defines functions that are used when the API succeeds/fails
+     *
+     *          Design Based on: https://stackoverflow.com/questions/18051276/return-a-value-from-asynchronous-call-to-run-method
+     */
+    interface Callback {
+        void onSuccess(String val);
+        void onError();
+    }
+
+    /**
+     * Purpose: Calls the API and defines the Callback to set the appropriate TextView
+     *          element on the screen with the value returned from API
+     *
+     * @param endpoint : a String representing the targeted endpoint at the server
+     * @param textElement : the TextView element we want to target
+     * @param prefixText : the already existing text on the screen (eg: "Server IP Address:")
+     */
     private void fetchAPIValue (String endpoint, TextView textElement, String prefixText){
 
         makeGetRequest(HOST + ":" + PORT.toString() + endpoint, new Callback() {
+            @SuppressLint("SetTextI18n")
             @Override
-            public void onSuccess(String val) {
-                textElement.setText(prefixText + " " + val);
+            public void onSuccess(String value) {
+                textElement.setText(prefixText + " " + value);
             }
 
+            @SuppressLint("SetTextI18n")
             @Override
             public void onError(){
                 server_ip.setText(prefixText + " " + DEFAULT_TEXT);
@@ -131,14 +168,15 @@ public class ServerInfo extends AppCompatActivity {
 
     }
 
-
-
-//    https://stackoverflow.com/questions/18051276/return-a-value-from-asynchronous-call-to-run-method
-//    https://www.geeksforgeeks.org/how-to-make-an-http-request-with-android/
-//    https://www.geeksforgeeks.org/android-cleartext-http-traffic-not-permitted/
     /**
-     * Purpose: Makes an API Call
-     * */
+     * Purpose: Make an API call to a desired url and run a corresponding callback function
+     *          when the get request succeeds / fails.
+     *
+     *          Based On: https://www.geeksforgeeks.org/how-to-make-an-http-request-with-android/
+     *
+     * @param url : the url we are making a GET request to
+     * @param cb : the callback object that will be called to report the results of the API
+     */
     private void makeGetRequest(String url, Callback cb) {
         RequestQueue volleyQueue = Volley.newRequestQueue(ServerInfo.this);
 
@@ -159,11 +197,6 @@ public class ServerInfo extends AppCompatActivity {
         );
         volleyQueue.add(jsonObjectRequest);
     }
-    interface Callback {
-        void onSuccess(String val);
-        void onError();
-    }
-
 
 
     /* Google Handler Functions */

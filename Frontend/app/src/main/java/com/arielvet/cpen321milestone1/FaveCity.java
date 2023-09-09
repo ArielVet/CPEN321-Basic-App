@@ -31,8 +31,8 @@ public class FaveCity extends FragmentActivity implements OnMapReadyCallback {
     }
 
     /**
-     * Function triggers when the map is ready to use. It Drops a pin on my favourite city and
-     * focuses on it
+     * Purpose: Function triggers when the map is ready to use. It Drops a pin on my favourite city
+     * @param googleMap : a Google Maps Object
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
