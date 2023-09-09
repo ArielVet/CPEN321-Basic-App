@@ -140,6 +140,7 @@ public class PhoneDetails extends AppCompatActivity {
             public void onLocationChanged(Location location) {
                 // Find coordinates of person, converts it to city, and updates city caption
                 try {
+                    // TODO: Add Stack Overflow Credit
                     List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
                     cityCap.setText(LocationCap + " " + addresses.get(0).getLocality());
                 } catch (IOException e) {
@@ -149,6 +150,7 @@ public class PhoneDetails extends AppCompatActivity {
         };
     }
 
+    //TODO: ADD Chat GPT Credit
     /**
      * Purpose: Once the user interacts with the permission box, check if they have permissions, if they do
      *          if they do, run the location listener to get city names

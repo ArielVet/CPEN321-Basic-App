@@ -1,6 +1,5 @@
 package com.arielvet.cpen321milestone1;
 
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,9 +7,6 @@ import android.view.View;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-
 
 public class MainActivity extends AppCompatActivity {
 
@@ -20,10 +16,6 @@ public class MainActivity extends AppCompatActivity {
     private Button phoneDetails;
     private Button serverInfo;
     private Button surprise;
-
-    // Google Sign In Variables
-    private GoogleSignInClient mGoogleSignInClient;
-    private static final int RC_SIGN_IN = 1;
 
     final static String TAG = "MainActivity";
 

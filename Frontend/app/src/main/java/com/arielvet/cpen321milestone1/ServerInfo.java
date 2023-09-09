@@ -6,6 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -13,14 +18,28 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.atomic.AtomicReference;
+
+
 public class ServerInfo extends AppCompatActivity {
 
-    // Activity Name
+    // CONSTANTS
     private static final String TAG = "ServerInfo";
+    private static final String HOST = "https://localhost";
+    //    private static final String HOST = "20.63.36.199"; REPLACE ONCE SERVER GOES LIVE
+    private static final Integer PORT = 8081;
+    private static final String DEFAULT_TEXT = "NOT FOUND";
 
     // Google Sign In Variables
     private GoogleSignInClient mGoogleSignInClient;
     private static final int RC_SIGN_IN = 1;
+
 
     // Displayed Data
     private String public_IP_Address;
@@ -43,13 +62,35 @@ public class ServerInfo extends AppCompatActivity {
     }
 
     /* Helping Functions */
+    
+    
     /**
      * Purpose: Function is called only after the user signs in to the app.
      *          It makes API calls to the server and saves the data to local variables
      */
-    private void makeAPICalls() {
+    private void updateData() {
+        String url = HOST + ":" + PORT.toString();
+
+        public_IP_Address = makeAPICall(url + "/ipAddress");
+        Log.d(TAG, public_IP_Address);
+
+        server_local_time = makeAPICall(url + "/time");
+        Log.d(TAG, server_local_time);
+
+        backend_Name = makeAPICall(url + "/name");
+        Log.d(TAG, backend_Name);
 
     }
+
+    // TODO: Chat GPT Credit
+    /**
+     * Purpose: Makes an API Call
+     * */
+    private static String makeAPICall(String url) {
+
+    }
+
+
 
     /* Google Handler Functions */
 
@@ -134,7 +175,7 @@ public class ServerInfo extends AppCompatActivity {
         else {
             signIn_name = account.getDisplayName();
             Log.d(TAG, signIn_name);
-            makeAPICalls();
+            updateData();
         }
     }
 }
