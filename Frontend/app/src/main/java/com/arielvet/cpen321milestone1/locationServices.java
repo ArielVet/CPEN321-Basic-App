@@ -25,23 +25,28 @@ public final class locationServices {
     private LocationManager locationManager;
     private LocationListener locationListener;
 
+    private final static Long UpdateTime = 2L;
+    private final static int  MinDistance = 0;
+
     private String city;
-    private String country;
+    private String countryCode;
 
     interface Callback {
-        void setValid(String name);
+        void setValid();
         void setInvalid();
     }
 
-    public locationServices(Activity activity) {
+    public locationServices(Activity activity, Callback cb) {
         this.myActivity = activity;
+        requestPerms();
+        setUpLocationServices(cb);
     }
 
     /**
      * Purpose: Functions checks location Permissions
      * @return True if has access, false if not
      */
-    public boolean checkPerms() {
+    private boolean checkPerms() {
         return (ContextCompat.checkSelfPermission(myActivity, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 && ContextCompat.checkSelfPermission(myActivity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED);
     }
@@ -49,7 +54,7 @@ public final class locationServices {
     /**
      * Purpose: Functions requests location Permissions
      */
-    public void requestPerms() {
+    private void requestPerms() {
 
         String LOC_COARSE = android.Manifest.permission.ACCESS_COARSE_LOCATION;
         String LOC_FINE = Manifest.permission.ACCESS_FINE_LOCATION;
@@ -87,7 +92,7 @@ public final class locationServices {
      *          Based On: https://stackoverflow.com/questions/22323974/how-to-get-city-name-by-latitude-longitude-in-android
      */
     @SuppressLint("SetTextI18n")
-    public void setUpLocationServices(Callback cb){
+    private void setUpLocationServices(Callback cb){
         //Set up Coordinates to city converter
         geocoder = new Geocoder(myActivity, Locale.getDefault());
 
@@ -99,7 +104,8 @@ public final class locationServices {
                 List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
                 if (addresses != null){
                     city = addresses.get(0).getLocality();
-                    cb.setValid(city);
+                    countryCode = addresses.get(0).getCountryCode();
+                    cb.setValid();
                 }
                 else {
                     cb.setInvalid();
@@ -115,13 +121,31 @@ public final class locationServices {
      * minDistance is idk
      * */
     @SuppressLint("MissingPermission")
-    public boolean setLocationUpdater(Long updateTime, int minDistance){
+    public boolean activateLocationUpdater(){
         if (checkPerms()){
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, updateTime, minDistance, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, UpdateTime * 1000, MinDistance, locationListener);
             return true;
         }
-
         return false;
+    }
+
+    @SuppressLint("MissingPermission")
+    public boolean getCurrentLocation(){
+        if (checkPerms()){
+            locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, locationListener, null);
+            locationManager.removeUpdates(locationListener);
+            return true;
+        }
+        return false;
+
+    }
+
+    public String getCity(){
+        return (city == null) ? null : new String(city);
+    }
+
+    public String getCC (){
+        return (countryCode == null) ? null : new String(countryCode);
     }
 
 }

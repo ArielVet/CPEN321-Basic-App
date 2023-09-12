@@ -14,6 +14,8 @@ public class MainActivity extends AppCompatActivity {
      * List of chatGPT uses:
      *  - help identify TextView.setText() to override existing text
      *  - identify onRequestPermissionsResult as a method to detect when the user interacted with the permission window
+     * - teahc how to use callbacks
+     * - teach how to use requestsingleupdate
      */
 
 

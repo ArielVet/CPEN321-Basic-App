@@ -15,7 +15,6 @@ public class PhoneDetails extends AppCompatActivity {
     private String LocationCap;
 
     private final static String NoLoc = "Unknown";
-    private final static Long UpdateTime = 2L;
 
     private locationServices locService;
 
@@ -33,12 +32,10 @@ public class PhoneDetails extends AppCompatActivity {
         //Get the caption for city Location
         LocationCap = getString(R.string.curr_city_cap);
 
-        locService = new locationServices(this);
-        locService.requestPerms();
-        locService.setUpLocationServices(new locationServices.Callback() {
+        locService = new locationServices(this, new locationServices.Callback() {
             @Override
-            public void setValid(String name) {
-                cityCap.setText(LocationCap + " " + name);
+            public void setValid() {
+                cityCap.setText(LocationCap + " " + locService.getCity());
             }
 
             @Override
@@ -49,7 +46,7 @@ public class PhoneDetails extends AppCompatActivity {
 
         // If We have access to locations, activate the location finder to find and set city caption,
         // else set it to unknown
-        if (!locService.setLocationUpdater(UpdateTime*1000, 0)) {
+        if (!locService.activateLocationUpdater()) {
             cityCap.setText(LocationCap + " " + NoLoc);
         }
 
@@ -66,7 +63,6 @@ public class PhoneDetails extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        locService.setLocationUpdater(UpdateTime*1000, 0);
+        locService.activateLocationUpdater();
     }
 }
