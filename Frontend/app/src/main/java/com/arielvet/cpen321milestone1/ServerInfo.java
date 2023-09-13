@@ -1,7 +1,14 @@
 package com.arielvet.cpen321milestone1;
 
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -21,6 +28,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
 import org.json.JSONException;
@@ -40,7 +49,8 @@ public class ServerInfo extends AppCompatActivity {
 
     // Google Sign In Variables
     private GoogleSignInClient mGoogleSignInClient;
-    private static final int RC_SIGN_IN = 1;
+    private ActivityResultLauncher<Intent> launcher;
+    private static final int RC_SIGN_IN = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,12 +59,6 @@ public class ServerInfo extends AppCompatActivity {
 
         // Set Up the google instances
         googleSetUp();
-
-        // Triggers the sign in process. Once a successful sign in occurs, updateUI() is called
-        // and the TextViews on the screen update with the correct values.
-        signIn();
-
-
     }
 
     /* Helping Functions */
@@ -67,6 +71,7 @@ public class ServerInfo extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     private void updateUI(String accountName) {
 
+        Log.d(TAG, "TEST");
         /* Sets Up and Updates the TextViews */
         // Displayed Data
         TextView server_ip = findViewById(R.id.server_ip_text);
@@ -81,7 +86,6 @@ public class ServerInfo extends AppCompatActivity {
         TextView client_time = findViewById(R.id.client_time_text);
         client_time.setText(getString(R.string.client_time_cap) + " " + getTime());
 
-
         TextView backend_Name = findViewById(R.id.backend_name_text);
         fetchAPIValue("/name", backend_Name, getString(R.string.backend_name_cap));
 
@@ -91,7 +95,6 @@ public class ServerInfo extends AppCompatActivity {
 
     /**
      * Purpose: retrieves the IPv4 address of the device
-     * <p>
      *          Based on: https://stackoverflow.com/questions/6064510/how-to-get-ip-address-of-the-device-from-code
      *
      * @return the IP address
@@ -185,11 +188,27 @@ public class ServerInfo extends AppCompatActivity {
 
     /* Google Handler Functions */
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(TAG, "Start");
+        GoogleSignInAccount acc = GoogleSignIn.getLastSignedInAccount(this);
+        if (acc == null){
+            Log.d(TAG, "Start-sign");
+            signIn();
+        }
+        else{
+            Log.d(TAG, "start-done");
+            updateUI(acc.getDisplayName());
+        }
+    }
+
     /**
      * Purpose: Function configures the google sign in to request certain info and
      *          creates the client
      * */
     private void googleSetUp (){
+        Log.d(TAG, "SetUp");
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -198,32 +217,27 @@ public class ServerInfo extends AppCompatActivity {
 
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+            @Override
+            public void onActivityResult(ActivityResult result) {
+                if (result.getResultCode() == RC_SIGN_IN){
+                    Log.d(TAG, "TASK");
+                    Intent data = result.getData();
+                    Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                    handleSignInResult(task);
+                }
+            }
+        });
     }
 
     /**
      * Purpose: Function is called when the button is clicked to trigger the signIn process
      */
     private void signIn() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         // If the signInIntent is successful it will return RC_SIGN_IN
-        startActivityForResult(signInIntent, RC_SIGN_IN);
-    }
-
-    /**
-     * Purpose: Function listens for the user's activity,
-     *          Checks if its successful, and if it is, handle the sign in
-     */
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            // The Task returned from this call is always completed, no need to attach
-            // a listener.
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            handleSignInResult(task);
-        }
+        Log.d(TAG, "SignIn");
+        Intent intent = mGoogleSignInClient.getSignInIntent();
+        launcher.launch(intent);
     }
 
     /**
@@ -231,28 +245,18 @@ public class ServerInfo extends AppCompatActivity {
      *          the function gets the associated account and calls getAccountInfo()
      */
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
-        try {
-            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-
-            // Signed in successfully, show authenticated UI.
-            getAccountInfo(account);
-        } catch (ApiException e) {
-            // The ApiException status code indicates the detailed failure reason.
-            // Please refer to the GoogleSignInStatusCodes class reference for more information.
-            Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
-            getAccountInfo(null);
-        }
+       Log.d(TAG, "HANDLE");
+        completedTask.addOnSuccessListener(new OnSuccessListener<GoogleSignInAccount>() {
+            @Override
+            public void onSuccess(GoogleSignInAccount googleSignInAccount) {
+                updateUI(googleSignInAccount.getDisplayName());
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, "FAIL");
+            }
+        });
     }
 
-    /**
-     * Purpose: Function saves the User's Name from the account and connects to the back-end
-     */
-    private void getAccountInfo(GoogleSignInAccount account) {
-        if (account == null){
-            Log.d(TAG, "No Users Signed In");
-        }
-        else {
-            updateUI(account.getDisplayName());
-        }
-    }
 }
