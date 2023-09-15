@@ -16,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
      *  - identify onRequestPermissionsResult as a method to detect when the user interacted with the permission window
      * - teahc how to use callbacks
      * - teach how to use requestsingleupdate
+     * - use handler to see set a delay on when to disply colours (display colours in a row with a pause in between)
      */
 
 
