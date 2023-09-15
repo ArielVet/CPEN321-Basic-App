@@ -71,9 +71,7 @@ public class ServerInfo extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     private void updateUI(String accountName) {
 
-        Log.d(TAG, "TEST");
         /* Sets Up and Updates the TextViews */
-        // Displayed Data
         TextView server_ip = findViewById(R.id.server_ip_text);
         fetchAPIValue("/ipAddress", server_ip, getString(R.string.server_ip_cap));
 

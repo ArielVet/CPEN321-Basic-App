@@ -7,7 +7,6 @@ import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -21,7 +20,8 @@ public class ColourGame extends AppCompatActivity {
 
     // Global Variables
     private int score;
-    private int currentColour;
+    private int currentIndexCheck;
+
 
     private ArrayList<Integer> colourSequence;
     private int[] colours;
@@ -32,13 +32,6 @@ public class ColourGame extends AppCompatActivity {
     // Non Button Elements
     private TextView scoreText;
     private Button canvas;
-
-    // Button Elements
-    private Button newGameButton;
-    private Button colour1Button;
-    private Button colour2Button;
-    private Button colour3Button;
-    private Button colour4Button;
 
     // Handler to add timers
     private final Handler handler = new Handler();
@@ -62,55 +55,60 @@ public class ColourGame extends AppCompatActivity {
         scoreText = findViewById(R.id.score_text);
 
         /* Buttons */
-        colour1Button = findViewById(R.id.colour1_button);
+        Button colour1Button = findViewById(R.id.colour1_button);
         colour1Button.setOnTouchListener((view, motionEvent) -> {
             if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
-                currentColour = 0;
                 canvas.setBackgroundTintList(ColorStateList.valueOf(colours[0]));
+                canvas.setText(colours_cap[0]);
             }
             else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                 canvas.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.white)));
+                canvas.setText("");
             }
             return false;
         });
 
-        colour2Button = findViewById(R.id.colour2_button);
+        Button colour2Button = findViewById(R.id.colour2_button);
         colour2Button.setOnTouchListener((view, motionEvent) -> {
             if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
-                currentColour = 1;
                 canvas.setBackgroundTintList(ColorStateList.valueOf(colours[1]));
+                canvas.setText(colours_cap[1]);
             }
             else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                 canvas.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.white)));
+                canvas.setText("");
             }
             return false;
         });
-        
-        colour3Button = findViewById(R.id.colour3_button);
+
+        Button colour3Button = findViewById(R.id.colour3_button);
         colour3Button.setOnTouchListener((view, motionEvent) -> {
             if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
-                currentColour = 2;
                 canvas.setBackgroundTintList(ColorStateList.valueOf(colours[2]));
+                canvas.setText(colours_cap[2]);
             }
             else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                 canvas.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.white)));
+                canvas.setText("");
             }
             return false;
         });
 
-        colour4Button = findViewById(R.id.colour4_button);
+        Button colour4Button = findViewById(R.id.colour4_button);
         colour4Button.setOnTouchListener((view, motionEvent) -> {
             if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
-                currentColour = 3;
                 canvas.setBackgroundTintList(ColorStateList.valueOf(colours[3]));
+                canvas.setText(colours_cap[3]);
             }
             else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                 canvas.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.white)));
+                canvas.setText("");
             }
             return false;
         });
 
-        newGameButton = findViewById(R.id.new_game_button);
+        // Button Elements
+        Button newGameButton = findViewById(R.id.new_game_button);
         newGameButton.setOnClickListener(view -> playGame());
 
 
@@ -126,7 +124,6 @@ public class ColourGame extends AppCompatActivity {
     private void playGame(){
 
         // Reset the Score
-        currentColour = -1;
         score = 0;
         updateScore();
 
@@ -149,13 +146,22 @@ public class ColourGame extends AppCompatActivity {
 
     private boolean playRound(){
 
+        //Control Variables
+        currentIndexCheck = 0;
+
+
         // Adds another colour to the sequence
         colourSequence.add((int) (Math.random() * 4));
 
         // Play the Colours
-        playColours();
+        playColourSequence();
 
         // Listen to the Colours
+        while (currentIndexCheck < colourSequence.size()){
+
+            currentIndexCheck++;
+        }
+
 
         return false;
     }
@@ -163,11 +169,12 @@ public class ColourGame extends AppCompatActivity {
     /**
      * Purpose: Function will play the colours currently in a list with delays
      * */
-    private void playColours(){
+    private void playColourSequence(){
         for (int i = 0; i < colourSequence.size(); i++){
 
             //Get next colour from list
             int displayColour = colours[colourSequence.get(i)];
+            String colourSymbol = colours_cap[colourSequence.get(i)];
 
             // Delay Handler that will display the new colour every (COLOUR TIME + PAUSE TIME) units
             // Canvas will be displayColour for COLOUR time units
@@ -177,12 +184,14 @@ public class ColourGame extends AppCompatActivity {
                 public void run() {
                     // Updates the colour to the current one in list
                     canvas.setBackgroundTintList(ColorStateList.valueOf(displayColour));
+                    canvas.setText(colourSymbol);
 
                     // Update the canvas to white in COLOUR TIME units
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             canvas.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.white)));
+                            canvas.setText("");
                         }
                     }, COLOUR_TIME);
                 }
@@ -190,6 +199,15 @@ public class ColourGame extends AppCompatActivity {
         }
     }
 
+    /**
+     * Purpose: Triggered by button press and checks if
+     *          colour pressed = colour[index]
+     *
+     */
+
+    private boolean checkColour(int index, int currentColour){
+        return false;
+    }
 
 
 
