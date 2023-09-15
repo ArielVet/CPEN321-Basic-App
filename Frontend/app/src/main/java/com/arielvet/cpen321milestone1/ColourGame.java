@@ -6,6 +6,8 @@ import android.annotation.SuppressLint;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -13,51 +15,102 @@ import java.util.ArrayList;
 
 public class ColourGame extends AppCompatActivity {
 
+    // Constants
     private final int COLOUR_TIME = 500; // in milliseconds
     private final int PAUSE_TIME = 100;
 
-
-    //TODO MAYBE ADD HIGH SCORE
+    // Global Variables
     private int score;
+    private int currentColour;
 
     private ArrayList<Integer> colourSequence;
     private int[] colours;
     private String[] colours_cap;
-    private final Handler handler = new Handler();
 
+    //TODO MAYBE ADD HIGH SCORE
+
+    // Non Button Elements
     private TextView scoreText;
-
     private Button canvas;
 
+    // Button Elements
     private Button newGameButton;
     private Button colour1Button;
     private Button colour2Button;
     private Button colour3Button;
     private Button colour4Button;
 
-    
+    // Handler to add timers
+    private final Handler handler = new Handler();
+
+
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_colour_game);
 
+        // Removes any current calls
+        handler.removeCallbacksAndMessages(null);
 
         /* Fetch the colours and the Symbols used for Colourblind people */
-        colourSequence = new ArrayList<>();
         colours = new int[] {getColor(R.color.colour1), getColor(R.color.colour2), getColor(R.color.colour3), getColor(R.color.colour4)};
         colours_cap = new String[] {getString(R.string.colour1_cap), getString(R.string.colour2_cap), getString(R.string.colour3_cap), getString(R.string.colour4_cap)};
 
-        /* Fetch the buttons */
+        /* Non Button Elements */
         canvas = findViewById(R.id.canvas);
-        newGameButton = findViewById(R.id.new_game_button);
-        colour1Button = findViewById(R.id.colour1_button);
-        colour2Button = findViewById(R.id.colour2_button);
-        colour3Button = findViewById(R.id.colour3_button);
-        colour4Button = findViewById(R.id.colour4_button);
-
         scoreText = findViewById(R.id.score_text);
 
-        /* Play the Game*/
+        /* Buttons */
+        colour1Button = findViewById(R.id.colour1_button);
+        colour1Button.setOnTouchListener((view, motionEvent) -> {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+                currentColour = 0;
+                canvas.setBackgroundTintList(ColorStateList.valueOf(colours[0]));
+            }
+            else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                canvas.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.white)));
+            }
+            return false;
+        });
+
+        colour2Button = findViewById(R.id.colour2_button);
+        colour2Button.setOnTouchListener((view, motionEvent) -> {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+                currentColour = 1;
+                canvas.setBackgroundTintList(ColorStateList.valueOf(colours[1]));
+            }
+            else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                canvas.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.white)));
+            }
+            return false;
+        });
+        
+        colour3Button = findViewById(R.id.colour3_button);
+        colour3Button.setOnTouchListener((view, motionEvent) -> {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+                currentColour = 2;
+                canvas.setBackgroundTintList(ColorStateList.valueOf(colours[2]));
+            }
+            else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                canvas.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.white)));
+            }
+            return false;
+        });
+
+        colour4Button = findViewById(R.id.colour4_button);
+        colour4Button.setOnTouchListener((view, motionEvent) -> {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+                currentColour = 3;
+                canvas.setBackgroundTintList(ColorStateList.valueOf(colours[3]));
+            }
+            else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                canvas.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.white)));
+            }
+            return false;
+        });
+
+        newGameButton = findViewById(R.id.new_game_button);
         newGameButton.setOnClickListener(view -> playGame());
 
 
@@ -73,10 +126,16 @@ public class ColourGame extends AppCompatActivity {
     private void playGame(){
 
         // Reset the Score
+        currentColour = -1;
         score = 0;
         updateScore();
 
+        // Reset the colourSequence
+        colourSequence = new ArrayList<>();
+
+        // Keep playing rounds until you fail a round
         while (playRound()){
+            // If you pass the round successfully, update the score and move on to round
             score++;
             updateScore();
         }
