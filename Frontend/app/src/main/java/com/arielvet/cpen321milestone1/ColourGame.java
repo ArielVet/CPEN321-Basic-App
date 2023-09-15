@@ -28,7 +28,7 @@ public class ColourGame extends AppCompatActivity {
 
     /* Defined at start Arrays */
     private int[] colours; //Array contains the colours define in colours.xml
-    private String[] colours_cap; // array contains the symbols for colours for colourblind people
+    private String[] colourSymbol; // array contains the symbols for colours for colourblind people
 
     //TODO MAYBE ADD HIGH SCORE
 
@@ -40,8 +40,6 @@ public class ColourGame extends AppCompatActivity {
     private final Handler handler = new Handler(); //handler used to time the colour flashes
 
 
-
-    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,68 +50,17 @@ public class ColourGame extends AppCompatActivity {
 
         /* Fetch the colours and the Symbols used for Colourblind people */
         colours = new int[] {getColor(R.color.colour0), getColor(R.color.colour1), getColor(R.color.colour2), getColor(R.color.colour3)};
-        colours_cap = new String[] {getString(R.string.colour0_cap), getString(R.string.colour1_cap), getString(R.string.colour2_cap), getString(R.string.colour3_cap)};
+        colourSymbol = new String[] {getString(R.string.colour0_cap), getString(R.string.colour1_cap), getString(R.string.colour2_cap), getString(R.string.colour3_cap)};
 
         /* Non Button Elements */
         canvas = findViewById(R.id.canvas);
         scoreText = findViewById(R.id.score_text);
 
-        /* Buttons */
-        Button colour0Button = findViewById(R.id.colour0_button);
-        colour0Button.setOnTouchListener((view, motionEvent) -> {
-            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
-                canvas.setBackgroundTintList(ColorStateList.valueOf(colours[0]));
-                canvas.setText(colours_cap[0]);
-            }
-            else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                canvas.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.white)));
-                canvas.setText("");
-                verifySequence(0);
-            }
-            return false;
-        });
-
-        Button colour1Button = findViewById(R.id.colour1_button);
-        colour1Button.setOnTouchListener((view, motionEvent) -> {
-            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
-                canvas.setBackgroundTintList(ColorStateList.valueOf(colours[1]));
-                canvas.setText(colours_cap[1]);
-            }
-            else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                canvas.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.white)));
-                canvas.setText("");
-                verifySequence(1);
-            }
-            return false;
-        });
-
-        Button colour2Button = findViewById(R.id.colour2_button);
-        colour2Button.setOnTouchListener((view, motionEvent) -> {
-            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
-                canvas.setBackgroundTintList(ColorStateList.valueOf(colours[2]));
-                canvas.setText(colours_cap[2]);
-            }
-            else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                canvas.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.white)));
-                canvas.setText("");
-                verifySequence(2);
-            }
-            return false;
-        });
-
-        Button colour3Button = findViewById(R.id.colour3_button);
-        colour3Button.setOnTouchListener((view, motionEvent) -> {
-            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
-                canvas.setBackgroundTintList(ColorStateList.valueOf(colours[3]));
-                canvas.setText(colours_cap[3]);
-            }
-            else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                canvas.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.white)));
-                canvas.setText("");
-                verifySequence(3);
-            }
-            return false;
-        });
+        /* Colour Button Deceleration */
+        declareButton(R.id.colour0_button,0);
+        declareButton(R.id.colour1_button,1);
+        declareButton(R.id.colour2_button,2);
+        declareButton(R.id.colour3_button,3);
 
         // Launch New Game when someone presses the button
         Button newGameButton = findViewById(R.id.new_game_button);
@@ -126,6 +73,34 @@ public class ColourGame extends AppCompatActivity {
         super.onDestroy();
         // Remove any pending callbacks to avoid memory leaks
         handler.removeCallbacksAndMessages(null);
+    }
+
+    /**
+     * Purpose: To declare the colour buttons and their event handlers
+     *
+     * @param id : the id of buttons
+     * @param colourIndex : the associated number with the button. button with
+     *                      id colour0_button has index 0
+     * */
+    @SuppressLint("ClickableViewAccessibility")
+    private void declareButton(int id, int colourIndex){
+        // Identify the button and add listeners for when it is pressed and when it is released
+        findViewById(id).setOnTouchListener((view, motionEvent) -> {
+
+            // When the button is pressed, update its colour and symbol
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+                canvas.setBackgroundTintList(ColorStateList.valueOf(colours[colourIndex]));
+                canvas.setText(colourSymbol[colourIndex]);
+            }
+            // When it is released, update to white, no symbol, and run verifySequence
+            // to ensure its the right press
+            else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                canvas.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.white)));
+                canvas.setText("");
+                verifySequence(colourIndex);
+            }
+            return false;
+        });
     }
 
     /**
@@ -177,7 +152,7 @@ public class ColourGame extends AppCompatActivity {
 
             //Get next colour from list
             int displayColour = colours[colourSequence.get(i)];
-            String colourSymbol = colours_cap[colourSequence.get(i)];
+            String colourSymbol = this.colourSymbol[colourSequence.get(i)];
 
             /*  Delay Handler that will display the new colour every (COLOUR TIME + PAUSE TIME) units
                 Canvas will be displayColour for COLOUR time units, and THEN
