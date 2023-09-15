@@ -58,7 +58,7 @@ public final class locationServices {
         String LOC_COARSE = android.Manifest.permission.ACCESS_COARSE_LOCATION;
         String LOC_FINE = Manifest.permission.ACCESS_FINE_LOCATION;
 
-        // If both are granted then return else
+        // If either are not granted run code
         if (!checkPerms()){
             // If either permission is denied run code
             if(ActivityCompat.shouldShowRequestPermissionRationale(myActivity, LOC_COARSE) ||
@@ -89,6 +89,8 @@ public final class locationServices {
      * Purpose: Sets up the Geocoder to convert cords -> city and
      *          the location manager/listner to track the cords
      *          Based On: https://stackoverflow.com/questions/22323974/how-to-get-city-name-by-latitude-longitude-in-android
+     *
+     * @param  cb : a call back function that will run when fetching the address succeeds/fails
      */
     @SuppressLint("SetTextI18n")
     private void setUpLocationServices(Callback cb){
@@ -115,8 +117,9 @@ public final class locationServices {
     }
 
     /**
-     * updateTime in seconds
-     * minDistance is idk
+     * Purpose: activates the location poller which requests location every updateTime units or minDistance
+     *          updateTime in seconds
+     *          minDistance is meters
      * */
     @SuppressLint("MissingPermission")
     public boolean activateLocationUpdater(){
@@ -127,6 +130,11 @@ public final class locationServices {
         return false;
     }
 
+    /**
+     * Purpose: return string
+     *
+     * @return the city name
+     * */
     public String getCity(){
         return (city == null) ? null : new String(city);
     }

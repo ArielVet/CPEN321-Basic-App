@@ -9,18 +9,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    // TODO remove this
-    /**
-     * List of chatGPT uses:
-     *  - identify onRequestPermissionsResult as a method to detect when the user interacted with the permission window
-     * - teahc how to use callbacks
-     * - use handler to see set a delay on when to disply colours (display colours in a row with a pause in between)
-     * - added onTouch to check wehn pressa nd when release
-     */
-
-
-    final static String TAG = "MainActivity";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

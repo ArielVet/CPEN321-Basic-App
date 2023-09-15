@@ -20,7 +20,7 @@
 
     <string name="colour_game_title">Colour Memory Game</string>
     <string name="new_game_cap">New Game</string>
-    <string name="reset_cap">Reset Score</string>
+    <string name="reset_cap">Reset High Score</string>
     <string name="score_cap">Score:</string>
     <string name="high_cap">High Score:</string>
     <string name="colour0_cap">△</string>

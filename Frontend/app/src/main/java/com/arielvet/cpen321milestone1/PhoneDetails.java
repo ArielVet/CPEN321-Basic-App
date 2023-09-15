@@ -10,12 +10,14 @@ import android.widget.TextView;
 
 public class PhoneDetails extends AppCompatActivity {
 
-    private TextView cityCap;
-
-    private String LocationCap;
-
+    /* Constant */
     private final static String NoLoc = "Unknown";
 
+    /* Text Elements */
+    private TextView cityCap;
+    private String cityCap_text;
+
+    /* Extra Objects */
     private locationServices locService;
 
     @SuppressLint({"MissingPermission", "SetTextI18n"})
@@ -30,24 +32,24 @@ public class PhoneDetails extends AppCompatActivity {
         TextView modelCap = findViewById(R.id.model_text);
 
         //Get the caption for city Location
-        LocationCap = getString(R.string.curr_city_cap);
+        cityCap_text = getString(R.string.curr_city_cap);
 
         locService = new locationServices(this, new locationServices.Callback() {
             @Override
             public void setValid() {
-                cityCap.setText(LocationCap + " " + locService.getCity());
+                cityCap.setText(cityCap_text + " " + locService.getCity());
             }
 
             @Override
             public void setInvalid() {
-                cityCap.setText(LocationCap + " " + NoLoc);
+                cityCap.setText(cityCap_text + " " + NoLoc);
             }
         });
 
         // If We have access to locations, activate the location finder to find and set city caption,
         // else set it to unknown
         if (!locService.activateLocationUpdater()) {
-            cityCap.setText(LocationCap + " " + NoLoc);
+            cityCap.setText(cityCap_text + " " + NoLoc);
         }
 
         //Set Manufacturer and Phone Model Captions
