@@ -15,30 +15,30 @@ import java.util.ArrayList;
 
 public class ColourGame extends AppCompatActivity {
 
-    // Constants
-    private final int COLOUR_TIME = 500; // in milliseconds
-    private final int PAUSE_TIME = 100;
+    /* Constants */
+    private final int COLOUR_TIME = 500; // time it displays the colour in milliseconds
+    private final int PAUSE_TIME = 100; // time it waits between colours (aka white) in milliseconds
 
-    // Global Variables
-    private int score;
-    private ArrayList<Integer> colourSequence;
+    /* Global Variables */
+    private int score; // The score of the player
+    private ArrayList<Integer> colourSequence; // The colour sequence shown to the player
 
-    // Round Dependent Variables
-    private int currentIndex;
-    private boolean failedRound;
+    /* Round Dependent Variable */
+    private int currentIndex;  // The currentIndex we are checking in a round
 
-    //Defined at start Stuff
-    private int[] colours;
-    private String[] colours_cap;
+    /* Defined at start Arrays */
+    private int[] colours; //Array contains the colours define in colours.xml
+    private String[] colours_cap; // array contains the symbols for colours for colourblind people
 
     //TODO MAYBE ADD HIGH SCORE
 
-    // Non Button Elements
-    private TextView scoreText;
-    private Button canvas;
+    /* Non Button Elements */
+    private TextView scoreText; // The text element that shows score
+    private Button canvas; // The white canvas that flashes colours
 
-    // Handler to add timers
-    private final Handler handler = new Handler();
+    /* Extra Objects */
+    private final Handler handler = new Handler(); //handler used to time the colour flashes
+
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -47,7 +47,7 @@ public class ColourGame extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_colour_game);
 
-        // Removes any current calls
+        /* Removes any current calls */
         handler.removeCallbacksAndMessages(null);
 
         /* Fetch the colours and the Symbols used for Colourblind people */
@@ -68,7 +68,7 @@ public class ColourGame extends AppCompatActivity {
             else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                 canvas.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.white)));
                 canvas.setText("");
-                checkColour(0);
+                verifySequence(0);
             }
             return false;
         });
@@ -82,7 +82,7 @@ public class ColourGame extends AppCompatActivity {
             else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                 canvas.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.white)));
                 canvas.setText("");
-                checkColour(1);
+                verifySequence(1);
             }
             return false;
         });
@@ -96,7 +96,7 @@ public class ColourGame extends AppCompatActivity {
             else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                 canvas.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.white)));
                 canvas.setText("");
-                checkColour(2);
+                verifySequence(2);
             }
             return false;
         });
@@ -110,15 +110,14 @@ public class ColourGame extends AppCompatActivity {
             else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                 canvas.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.white)));
                 canvas.setText("");
-                checkColour(3);
+                verifySequence(3);
             }
             return false;
         });
 
-        // Button Elements
+        // Launch New Game when someone presses the button
         Button newGameButton = findViewById(R.id.new_game_button);
         newGameButton.setOnClickListener(view -> playGame());
-
 
     }
 
@@ -129,6 +128,10 @@ public class ColourGame extends AppCompatActivity {
         handler.removeCallbacksAndMessages(null);
     }
 
+    /**
+     * Purpose: The function resets the score and colourSequence variables
+     *          and begins a new round
+     */
     private void playGame(){
 
         // Reset the Score
@@ -141,11 +144,17 @@ public class ColourGame extends AppCompatActivity {
         playRound();
     }
 
-    @SuppressLint("SetTextI18n")
-    private void updateScore(){
-        scoreText.setText(getString(R.string.score_cap) + " " + score);
-    }
-
+    /**
+     * Purpose: Function begins new round:
+     *          1.  First the function resets the currentIndex element (this element is used
+     *              by the program to detect the current colour in the sequence the user is
+     *              supposed to be inputting)
+     *          2.  The Function Launches playColourSequence to display the current sequence
+     *              of colours.
+     *          3.  Once the colours have been played, we wait for an asynchronous event to
+     *              occur. This event will be triggered by verifySequence.
+     *
+     */
     private void playRound(){
 
         //Control Variables
@@ -159,8 +168,10 @@ public class ColourGame extends AppCompatActivity {
     }
 
     /**
-     * Purpose: Function will play the colours currently in a list with delays
-     * */
+     * Purpose: Function will play the colours currently in a list with delays. Instead of using
+     *          infinite loops or thread.sleeps which pause program. This uses a handler to schedule
+     *          colour changes accordingly.
+     */
     private void playColourSequence(){
         for (int i = 0; i < colourSequence.size(); i++){
 
@@ -168,9 +179,10 @@ public class ColourGame extends AppCompatActivity {
             int displayColour = colours[colourSequence.get(i)];
             String colourSymbol = colours_cap[colourSequence.get(i)];
 
-            // Delay Handler that will display the new colour every (COLOUR TIME + PAUSE TIME) units
-            // Canvas will be displayColour for COLOUR time units
-            // Canvas will be white  for PAUSE time units before proceeding to next colour
+            /*  Delay Handler that will display the new colour every (COLOUR TIME + PAUSE TIME) units
+                Canvas will be displayColour for COLOUR time units, and THEN
+                Canvas will be white  for PAUSE time units before proceeding to next colour
+             */
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -192,16 +204,20 @@ public class ColourGame extends AppCompatActivity {
     }
 
     /**
-     * Purpose: Triggered by button press and checks if
-     *          colour pressed = colour[index]
+     * Purpose: Function checks the asynchronous events of this game.
+     *          When a button is pressed, it calls this function with its associated colour
+     *          The function then checks if this colour is the next colour in the sequence
+     *          If we reached the end of the sequence successfully, start a new round,
+     *          else display game over
+     *
+     * @param pressedColour : The colour currently pressed by the user
      *
      */
-
-    private void checkColour(int currentColour){
-        if (colourSequence.get(currentIndex) == currentColour){
+    private void verifySequence(int pressedColour){
+        if (colourSequence.get(currentIndex) == pressedColour){
             currentIndex++;
 
-            //Reached end Succesfully
+            //Reached end Successfully
             if (currentIndex == colourSequence.size()){
                 score++;
                 updateScore();
@@ -215,7 +231,13 @@ public class ColourGame extends AppCompatActivity {
 
     }
 
-
+    /**
+     * Purpose: Updates the score on screen to show the score Element
+     * */
+    @SuppressLint("SetTextI18n")
+    private void updateScore(){
+        scoreText.setText(getString(R.string.score_cap) + " " + score);
+    }
 
 
 }
