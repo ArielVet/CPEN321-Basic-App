@@ -38,21 +38,25 @@ public class MainActivity extends AppCompatActivity {
         Button phoneDetails = findViewById(R.id.phone_details_button);
         phoneDetails.setOnClickListener(view -> {
             // Launch the Google Maps Activity
-            Intent phoneDetails1 = new Intent(MainActivity.this, PhoneDetails.class);
-            startActivity(phoneDetails1);
+            Intent phoneDetailsIntent = new Intent(MainActivity.this, PhoneDetails.class);
+            startActivity(phoneDetailsIntent);
         });
 
         // Button 3: Requests a user logs into Google and then displays some data
         Button serverInfo = findViewById(R.id.server_info_button);
         serverInfo.setOnClickListener(view -> {
             // Launch the Google Maps Activity
-            Intent serverInfo1 = new Intent(MainActivity.this, ServerInfo.class);
-            startActivity(serverInfo1);
+            Intent serverInfoIntent = new Intent(MainActivity.this, ServerInfo.class);
+            startActivity(serverInfoIntent);
         });
 
         //TODO Button 4
         Button surprise = findViewById(R.id.surprise_button);
-        surprise.setOnClickListener(view -> Log.d(TAG, "Surprise"));
+        surprise.setOnClickListener(view -> {
+            // Launch the Google Maps Activity
+            Intent colourGame = new Intent(MainActivity.this, ColourGame.class);
+            startActivity(colourGame);
+        });
     }
 
 

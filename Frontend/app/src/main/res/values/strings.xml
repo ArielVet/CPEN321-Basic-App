@@ -17,4 +17,13 @@
     <string name="client_time_cap">Client Local Time: </string>
     <string name="backend_name_cap">My Name: </string>
     <string name="logged_in_name_cap">Logged In As: </string>
+
+    <string name="colour_game_title">Colour Memory Game</string>
+    <string name="colour1_cap">△</string>
+    <string name="colour2_cap">□</string>
+    <string name="colour3_cap">○</string>
+    <string name="colour4_cap">◊</string>
+
+
+
 </resources>
