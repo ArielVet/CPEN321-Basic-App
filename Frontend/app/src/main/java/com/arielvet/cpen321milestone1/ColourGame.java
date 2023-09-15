@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.Button;
 import android.widget.TextView;
@@ -20,8 +21,11 @@ public class ColourGame extends AppCompatActivity {
 
     // Global Variables
     private int score;
-    private int currentIndexCheck;
     private ArrayList<Integer> colourSequence;
+
+    // Round Dependent Variables
+    private int currentIndex;
+    private boolean failedRound;
 
     //Defined at start Stuff
     private int[] colours;
@@ -64,6 +68,7 @@ public class ColourGame extends AppCompatActivity {
             else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                 canvas.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.white)));
                 canvas.setText("");
+                checkColour(0);
             }
             return false;
         });
@@ -77,6 +82,7 @@ public class ColourGame extends AppCompatActivity {
             else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                 canvas.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.white)));
                 canvas.setText("");
+                checkColour(1);
             }
             return false;
         });
@@ -90,6 +96,7 @@ public class ColourGame extends AppCompatActivity {
             else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                 canvas.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.white)));
                 canvas.setText("");
+                checkColour(2);
             }
             return false;
         });
@@ -103,6 +110,7 @@ public class ColourGame extends AppCompatActivity {
             else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                 canvas.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.white)));
                 canvas.setText("");
+                checkColour(3);
             }
             return false;
         });
@@ -130,13 +138,7 @@ public class ColourGame extends AppCompatActivity {
         // Reset the colourSequence
         colourSequence = new ArrayList<>();
 
-        // Keep playing rounds until you fail a round
-        while (playRound()){
-            // If you pass the round successfully, update the score and move on to round
-            score++;
-            updateScore();
-        }
-
+        playRound();
     }
 
     @SuppressLint("SetTextI18n")
@@ -144,26 +146,16 @@ public class ColourGame extends AppCompatActivity {
         scoreText.setText(getString(R.string.score_cap) + " " + score);
     }
 
-    private boolean playRound(){
+    private void playRound(){
 
         //Control Variables
-        currentIndexCheck = 0;
-
+        currentIndex = 0;
 
         // Adds another colour to the sequence
         colourSequence.add((int) (Math.random() * 4));
 
         // Play the Colours
         playColourSequence();
-
-        // Listen to the Colours
-        while (currentIndexCheck < colourSequence.size()){
-
-            currentIndexCheck++;
-        }
-
-
-        return false;
     }
 
     /**
@@ -205,8 +197,22 @@ public class ColourGame extends AppCompatActivity {
      *
      */
 
-    private boolean checkColour(int index, int currentColour){
-        return false;
+    private void checkColour(int currentColour){
+        if (colourSequence.get(currentIndex) == currentColour){
+            currentIndex++;
+
+            //Reached end Succesfully
+            if (currentIndex == colourSequence.size()){
+                score++;
+                updateScore();
+                playRound();
+            }
+        }
+        else{
+            Log.d("TEST", "GAME OVER");
+        }
+
+
     }
 
 
