@@ -22,14 +22,17 @@ public class ColourGame extends AppCompatActivity {
     private final int COLOUR_TIME = 500; // time it displays the colour in milliseconds
     private final int PAUSE_TIME = 100; // time it waits between colours (aka white) in milliseconds
 
-    /* Global Variables */
+    /* Score Variables */
     private int score; // The score of the player
     private int highScore;
-    private boolean gameOver;
-    private boolean newHighScore;
-    private ArrayList<Integer> colourSequence; // The colour sequence shown to the player
+
+    /* Boolean Logic Controllers */
+    private boolean gameOver = false;
+    private boolean newHighScore = false;
+    private boolean playingPattern = false;
 
     /* Round Dependent Variable */
+    private ArrayList<Integer> colourSequence; // The colour sequence shown to the player
     private int currentIndex;  // The currentIndex we are checking in a round
 
     /* Defined at start Arrays */
@@ -109,6 +112,9 @@ public class ColourGame extends AppCompatActivity {
             if (gameOver){
                 Toast.makeText(this, "Game Over! Press NEW GAME to start a New Game!", Toast.LENGTH_SHORT).show();
             }
+            else if (playingPattern){
+                Toast.makeText(this, "Wait For Pattern to Finish Playing", Toast.LENGTH_SHORT).show();
+            }
             // Else trigger button Presses
             else {
                 // When the button is pressed, update its colour and symbol
@@ -175,11 +181,15 @@ public class ColourGame extends AppCompatActivity {
      *          colour changes accordingly.
      */
     private void playColourSequence(){
+        playingPattern = true;
         for (int i = 0; i < colourSequence.size(); i++){
 
             //Get next colour from list
             int displayColour = colours[colourSequence.get(i)];
             String colourSymbol = this.colourSymbol[colourSequence.get(i)];
+
+            // Logic element that detects when last patern occurs
+            Boolean lastRound = (i == colourSequence.size() - 1);
 
             /*  Delay Handler that will display the new colour every (COLOUR TIME + PAUSE TIME) units
                 Canvas will be displayColour for COLOUR time units, and THEN
@@ -198,6 +208,10 @@ public class ColourGame extends AppCompatActivity {
                         public void run() {
                             canvas.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.white)));
                             canvas.setText("");
+
+                            // On the last pattern set playing to false
+                            if (lastRound) playingPattern = false;
+
                         }
                     }, COLOUR_TIME);
                 }
@@ -239,7 +253,7 @@ public class ColourGame extends AppCompatActivity {
             handler.removeCallbacksAndMessages(null);
             new AlertDialog.Builder(this)
                     .setTitle("Game Over!")
-                    .setMessage( (newHighScore) ? " New High Score: ": "Your Final Score is: " + score)
+                    .setMessage( ((newHighScore) ? " New High Score: ": "Your Final Score is: ") + score)
                     .setNegativeButton("OK", (dialogInterface, i) -> dialogInterface.dismiss())
                     .setPositiveButton("New Game", (dialogInterface, i) -> playGame())
                     .create()
