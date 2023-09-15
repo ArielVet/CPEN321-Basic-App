@@ -50,9 +50,9 @@ public class MainActivity extends AppCompatActivity {
             startActivity(serverInfoIntent);
         });
 
-        //TODO Button 4
-        Button surprise = findViewById(R.id.surprise_button);
-        surprise.setOnClickListener(view -> {
+        // Button 4: Surprise Button is a Colour Game
+        Button game = findViewById(R.id.surprise_button);
+        game.setOnClickListener(view -> {
             // Launch the Google Maps Activity
             Intent colourGame = new Intent(MainActivity.this, ColourGame.class);
             startActivity(colourGame);

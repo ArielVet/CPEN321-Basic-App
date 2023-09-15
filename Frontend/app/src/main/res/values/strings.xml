@@ -5,7 +5,7 @@
     <string name="favourite_city_caption">My Favourite City</string>
     <string name="phone_details_caption">Phone Details</string>
     <string name="server_info_caption">Server Info</string>
-    <string name="surprise">surprise</string>
+    <string name="colourGame">Colour Memory Game</string>
 
     <string name="curr_city_cap">Your Current City: </string>
     <string name="manuf_cap">Phone Manufacturer: </string>

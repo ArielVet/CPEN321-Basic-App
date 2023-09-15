@@ -2,13 +2,13 @@ package com.arielvet.cpen321milestone1;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.Button;
 import android.widget.TextView;
@@ -24,7 +24,9 @@ public class ColourGame extends AppCompatActivity {
 
     /* Global Variables */
     private int score; // The score of the player
+    private int highScore;
     private boolean gameOver;
+    private boolean newHighScore;
     private ArrayList<Integer> colourSequence; // The colour sequence shown to the player
 
     /* Round Dependent Variable */
@@ -34,15 +36,14 @@ public class ColourGame extends AppCompatActivity {
     private int[] colours; //Array contains the colours define in colours.xml
     private String[] colourSymbol; // array contains the symbols for colours for colourblind people
 
-    //TODO MAYBE ADD HIGH SCORE
-
     /* Non Button Elements */
     private TextView scoreText; // The text element that shows score
+    private TextView highScoreText; // The text element that shows High score
     private Button canvas; // The white canvas that flashes colours
 
     /* Extra Objects */
     private final Handler handler = new Handler(); //handler used to time the colour flashes
-
+    SharedPreferences gameData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +60,12 @@ public class ColourGame extends AppCompatActivity {
         /* Non Button Elements */
         canvas = findViewById(R.id.canvas);
         scoreText = findViewById(R.id.score_text);
+        highScoreText = findViewById(R.id.high_score_text);
+
+        /* Game Data*/
+        gameData = getSharedPreferences("CPEN321_data", Context.MODE_PRIVATE);
+        highScore = gameData.getInt("high_score", 0);
+        updateHighScore();
 
         /* Colour Button Deceleration */
         declareButton(R.id.colour0_button,0);
@@ -66,9 +73,16 @@ public class ColourGame extends AppCompatActivity {
         declareButton(R.id.colour2_button,2);
         declareButton(R.id.colour3_button,3);
 
+        findViewById(R.id.reset_score_button).setOnClickListener(view -> {
+            highScore = 0;
+            SharedPreferences.Editor editor = gameData.edit();
+            editor.putInt("high_score", 0);
+            editor.apply();
+            updateHighScore();
+        });
+
         // Launch New Game when someone presses the button
-        Button newGameButton = findViewById(R.id.new_game_button);
-        newGameButton.setOnClickListener(view -> playGame());
+        findViewById(R.id.new_game_button).setOnClickListener(view -> playGame());
 
     }
 
@@ -120,8 +134,9 @@ public class ColourGame extends AppCompatActivity {
      */
     private void playGame(){
 
-        // Reset the Score
+        // Resets the variables
         gameOver = false;
+        newHighScore = false;
         score = 0;
         updateScore();
 
@@ -207,6 +222,14 @@ public class ColourGame extends AppCompatActivity {
             //Reached end Successfully
             if (currentIndex == colourSequence.size()){
                 score++;
+                if (score > highScore){
+                    highScore = score;
+                    SharedPreferences.Editor editor = gameData.edit();
+                    editor.putInt("high_score", highScore);
+                    editor.apply();
+                    updateHighScore();
+                    newHighScore = true;
+                }
                 updateScore();
                 playRound();
             }
@@ -216,7 +239,7 @@ public class ColourGame extends AppCompatActivity {
             handler.removeCallbacksAndMessages(null);
             new AlertDialog.Builder(this)
                     .setTitle("Game Over!")
-                    .setMessage("Your Final Score is: " + score)
+                    .setMessage( (newHighScore) ? " New High Score: ": "Your Final Score is: " + score)
                     .setNegativeButton("OK", (dialogInterface, i) -> dialogInterface.dismiss())
                     .setPositiveButton("New Game", (dialogInterface, i) -> playGame())
                     .create()
@@ -231,6 +254,14 @@ public class ColourGame extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     private void updateScore(){
         scoreText.setText(getString(R.string.score_cap) + " " + score);
+    }
+
+    /**
+     * Purpose: Updates the High score on screen to show the score Element
+     * */
+    @SuppressLint("SetTextI18n")
+    private void updateHighScore(){
+        highScoreText.setText(getString(R.string.high_cap) + " " + highScore);
     }
 
 
