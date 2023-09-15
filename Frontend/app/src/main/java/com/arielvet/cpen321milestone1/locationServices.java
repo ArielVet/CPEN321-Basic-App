@@ -29,7 +29,6 @@ public final class locationServices {
     private final static int  MinDistance = 0;
 
     private String city;
-    private String countryCode;
 
     interface Callback {
         void setValid();
@@ -104,7 +103,6 @@ public final class locationServices {
                 List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
                 if (addresses != null){
                     city = addresses.get(0).getLocality();
-                    countryCode = addresses.get(0).getCountryCode();
                     cb.setValid();
                 }
                 else {
@@ -129,23 +127,8 @@ public final class locationServices {
         return false;
     }
 
-    @SuppressLint("MissingPermission")
-    public boolean getCurrentLocation(){
-        if (checkPerms()){
-            locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, locationListener, null);
-            locationManager.removeUpdates(locationListener);
-            return true;
-        }
-        return false;
-
-    }
-
     public String getCity(){
         return (city == null) ? null : new String(city);
-    }
-
-    public String getCC (){
-        return (countryCode == null) ? null : new String(countryCode);
     }
 
 }

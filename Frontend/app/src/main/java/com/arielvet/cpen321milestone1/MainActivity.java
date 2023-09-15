@@ -12,11 +12,10 @@ public class MainActivity extends AppCompatActivity {
     // TODO remove this
     /**
      * List of chatGPT uses:
-     *  - help identify TextView.setText() to override existing text
      *  - identify onRequestPermissionsResult as a method to detect when the user interacted with the permission window
      * - teahc how to use callbacks
-     * - teach how to use requestsingleupdate
      * - use handler to see set a delay on when to disply colours (display colours in a row with a pause in between)
+     * - added onTouch to check wehn pressa nd when release
      */
 
 
