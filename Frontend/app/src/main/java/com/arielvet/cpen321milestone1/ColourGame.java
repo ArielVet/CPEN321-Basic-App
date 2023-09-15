@@ -1,6 +1,8 @@
 package com.arielvet.cpen321milestone1;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import android.annotation.SuppressLint;
 import android.content.res.ColorStateList;
@@ -10,6 +12,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -21,6 +24,7 @@ public class ColourGame extends AppCompatActivity {
 
     /* Global Variables */
     private int score; // The score of the player
+    private boolean gameOver;
     private ArrayList<Integer> colourSequence; // The colour sequence shown to the player
 
     /* Round Dependent Variable */
@@ -87,17 +91,24 @@ public class ColourGame extends AppCompatActivity {
         // Identify the button and add listeners for when it is pressed and when it is released
         findViewById(id).setOnTouchListener((view, motionEvent) -> {
 
-            // When the button is pressed, update its colour and symbol
-            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
-                canvas.setBackgroundTintList(ColorStateList.valueOf(colours[colourIndex]));
-                canvas.setText(colourSymbol[colourIndex]);
+            // If game is over Display a message that they must start a new game
+            if (gameOver){
+                Toast.makeText(this, "Game Over! Press NEW GAME to start a New Game!", Toast.LENGTH_SHORT).show();
             }
-            // When it is released, update to white, no symbol, and run verifySequence
-            // to ensure its the right press
-            else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                canvas.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.white)));
-                canvas.setText("");
-                verifySequence(colourIndex);
+            // Else trigger button Presses
+            else {
+                // When the button is pressed, update its colour and symbol
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+                    canvas.setBackgroundTintList(ColorStateList.valueOf(colours[colourIndex]));
+                    canvas.setText(colourSymbol[colourIndex]);
+                }
+                // When it is released, update to white, no symbol, and run verifySequence
+                // to ensure its the right press
+                else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                    canvas.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.white)));
+                    canvas.setText("");
+                    verifySequence(colourIndex);
+                }
             }
             return false;
         });
@@ -110,6 +121,7 @@ public class ColourGame extends AppCompatActivity {
     private void playGame(){
 
         // Reset the Score
+        gameOver = false;
         score = 0;
         updateScore();
 
@@ -200,9 +212,16 @@ public class ColourGame extends AppCompatActivity {
             }
         }
         else{
-            Log.d("TEST", "GAME OVER");
+            gameOver = true;
+            handler.removeCallbacksAndMessages(null);
+            new AlertDialog.Builder(this)
+                    .setTitle("Game Over!")
+                    .setMessage("Your Final Score is: " + score)
+                    .setNegativeButton("OK", (dialogInterface, i) -> dialogInterface.dismiss())
+                    .setPositiveButton("New Game", (dialogInterface, i) -> playGame())
+                    .create()
+                    .show();
         }
-
 
     }
 
