@@ -21,33 +21,19 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <android.widget.Button
-        android:id="@+id/colour1_button"
+        android:id="@+id/colour0_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
-        android:background="@drawable/colour1_button"
-        android:text="@string/colour1_cap"
+        android:background="@drawable/colour0_button"
+        android:text="@string/colour0_cap"
         android:textColor="#FFFFFF"
         android:textSize="60sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/colour3_button"
-        app:layout_constraintEnd_toStartOf="@+id/colour2_button"
+        app:layout_constraintBottom_toTopOf="@+id/colour2_button"
+        app:layout_constraintEnd_toStartOf="@+id/colour1_button"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <android.widget.Button
-        android:id="@+id/colour4_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="36dp"
-        android:background="@drawable/colour4_button"
-        android:text="@string/colour4_cap"
-        android:textColor="@color/white"
-        android:textSize="60sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/colour3_button" />
 
     <android.widget.Button
         android:id="@+id/colour3_button"
@@ -58,26 +44,40 @@
         android:text="@string/colour3_cap"
         android:textColor="@color/white"
         android:textSize="60sp"
-        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/colour4_button"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/colour2_button" />
 
     <android.widget.Button
         android:id="@+id/colour2_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="36dp"
         android:background="@drawable/colour2_button"
         android:text="@string/colour2_cap"
         android:textColor="@color/white"
         android:textSize="60sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/colour4_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/colour3_button"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <android.widget.Button
+        android:id="@+id/colour1_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/colour1_button"
+        android:text="@string/colour1_cap"
+        android:textColor="@color/white"
+        android:textSize="60sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/colour3_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/colour1_button" />
+        app:layout_constraintStart_toEndOf="@+id/colour0_button" />
 
     <android.widget.Button
         android:id="@+id/reset_score_button"
@@ -85,7 +85,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/top_buttons"
         android:text="@string/reset_cap"
-        app:layout_constraintBottom_toTopOf="@+id/colour2_button"
+        app:layout_constraintBottom_toTopOf="@+id/colour1_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/new_game_button"
@@ -98,7 +98,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/top_buttons"
         android:text="@string/new_game_cap"
-        app:layout_constraintBottom_toTopOf="@+id/colour1_button"
+        app:layout_constraintBottom_toTopOf="@+id/colour0_button"
         app:layout_constraintEnd_toStartOf="@+id/reset_score_button"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"

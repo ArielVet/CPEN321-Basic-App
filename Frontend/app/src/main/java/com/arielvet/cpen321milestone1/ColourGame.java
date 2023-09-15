@@ -21,9 +21,9 @@ public class ColourGame extends AppCompatActivity {
     // Global Variables
     private int score;
     private int currentIndexCheck;
-
-
     private ArrayList<Integer> colourSequence;
+
+    //Defined at start Stuff
     private int[] colours;
     private String[] colours_cap;
 
@@ -47,16 +47,16 @@ public class ColourGame extends AppCompatActivity {
         handler.removeCallbacksAndMessages(null);
 
         /* Fetch the colours and the Symbols used for Colourblind people */
-        colours = new int[] {getColor(R.color.colour1), getColor(R.color.colour2), getColor(R.color.colour3), getColor(R.color.colour4)};
-        colours_cap = new String[] {getString(R.string.colour1_cap), getString(R.string.colour2_cap), getString(R.string.colour3_cap), getString(R.string.colour4_cap)};
+        colours = new int[] {getColor(R.color.colour0), getColor(R.color.colour1), getColor(R.color.colour2), getColor(R.color.colour3)};
+        colours_cap = new String[] {getString(R.string.colour0_cap), getString(R.string.colour1_cap), getString(R.string.colour2_cap), getString(R.string.colour3_cap)};
 
         /* Non Button Elements */
         canvas = findViewById(R.id.canvas);
         scoreText = findViewById(R.id.score_text);
 
         /* Buttons */
-        Button colour1Button = findViewById(R.id.colour1_button);
-        colour1Button.setOnTouchListener((view, motionEvent) -> {
+        Button colour0Button = findViewById(R.id.colour0_button);
+        colour0Button.setOnTouchListener((view, motionEvent) -> {
             if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
                 canvas.setBackgroundTintList(ColorStateList.valueOf(colours[0]));
                 canvas.setText(colours_cap[0]);
@@ -68,8 +68,8 @@ public class ColourGame extends AppCompatActivity {
             return false;
         });
 
-        Button colour2Button = findViewById(R.id.colour2_button);
-        colour2Button.setOnTouchListener((view, motionEvent) -> {
+        Button colour1Button = findViewById(R.id.colour1_button);
+        colour1Button.setOnTouchListener((view, motionEvent) -> {
             if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
                 canvas.setBackgroundTintList(ColorStateList.valueOf(colours[1]));
                 canvas.setText(colours_cap[1]);
@@ -81,8 +81,8 @@ public class ColourGame extends AppCompatActivity {
             return false;
         });
 
-        Button colour3Button = findViewById(R.id.colour3_button);
-        colour3Button.setOnTouchListener((view, motionEvent) -> {
+        Button colour2Button = findViewById(R.id.colour2_button);
+        colour2Button.setOnTouchListener((view, motionEvent) -> {
             if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
                 canvas.setBackgroundTintList(ColorStateList.valueOf(colours[2]));
                 canvas.setText(colours_cap[2]);
@@ -94,8 +94,8 @@ public class ColourGame extends AppCompatActivity {
             return false;
         });
 
-        Button colour4Button = findViewById(R.id.colour4_button);
-        colour4Button.setOnTouchListener((view, motionEvent) -> {
+        Button colour3Button = findViewById(R.id.colour3_button);
+        colour3Button.setOnTouchListener((view, motionEvent) -> {
             if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
                 canvas.setBackgroundTintList(ColorStateList.valueOf(colours[3]));
                 canvas.setText(colours_cap[3]);

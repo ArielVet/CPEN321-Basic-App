@@ -23,10 +23,10 @@
     <string name="reset_cap">Reset Score</string>
     <string name="score_cap">Score:</string>
     <string name="high_cap">High Score:</string>
-    <string name="colour1_cap">△</string>
-    <string name="colour2_cap">□</string>
-    <string name="colour3_cap">○</string>
-    <string name="colour4_cap">◊</string>
+    <string name="colour0_cap">△</string>
+    <string name="colour1_cap">□</string>
+    <string name="colour2_cap">○</string>
+    <string name="colour3_cap">◊</string>
 
 
 

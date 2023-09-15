@@ -4,17 +4,17 @@
     <color name="white">#FFFFFFFF</color>
     <color name="background">#FFE6CD</color>
 
-    <color name="colour1">#FF0000</color>
-    <color name="colour1Press">#C80000</color>
+    <color name="colour0">#FF0000</color>
+    <color name="colour0Press">#C80000</color>
 
-    <color name="colour2">#00A500</color>
-    <color name="colour2Press">#006E00</color>
+    <color name="colour1">#00A500</color>
+    <color name="colour1Press">#006E00</color>
 
-    <color name="colour3">#0000FF</color>
-    <color name="colour3Press">#0000C8</color>
+    <color name="colour2">#0000FF</color>
+    <color name="colour2Press">#0000C8</color>
 
-    <color name="colour4">#3E0095</color>
-    <color name="colour4Press">#FF26005C</color>
+    <color name="colour3">#3E0095</color>
+    <color name="colour3Press">#FF26005C</color>
 
     <color name="top_buttons">#BE7B27</color>
     <color name="top_buttonsPress">#915E1E</color>
