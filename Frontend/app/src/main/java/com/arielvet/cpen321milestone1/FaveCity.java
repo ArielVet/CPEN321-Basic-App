@@ -12,6 +12,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.arielvet.cpen321milestone1.databinding.ActivityFaveCityBinding;
 
+import java.util.Objects;
+
 public class FaveCity extends FragmentActivity implements OnMapReadyCallback {
 
     @Override
@@ -24,6 +26,8 @@ public class FaveCity extends FragmentActivity implements OnMapReadyCallback {
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
+
+        assert mapFragment != null;
         mapFragment.getMapAsync(this);
     }
 
@@ -35,7 +39,8 @@ public class FaveCity extends FragmentActivity implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
 
         LatLng zurich = new LatLng(47.3769, 8.5417);
-        googleMap.addMarker(new MarkerOptions().position(zurich).title("My Favourite City: Zurich")).showInfoWindow();
+        Objects.requireNonNull(googleMap.addMarker(new MarkerOptions().position(zurich)
+                .title("My Favourite City: Zurich"))).showInfoWindow();
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(zurich));
     }
 }

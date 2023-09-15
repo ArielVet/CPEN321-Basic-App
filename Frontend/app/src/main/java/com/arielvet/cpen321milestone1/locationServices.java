@@ -20,7 +20,7 @@ import java.util.Locale;
 
 public final class locationServices {
 
-    private Activity myActivity;
+    private final Activity myActivity;
     private Geocoder geocoder;
     private LocationManager locationManager;
     private LocationListener locationListener;
@@ -88,7 +88,7 @@ public final class locationServices {
     /**
      * Purpose: Sets up the Geocoder to convert cords -> city and
      *          the location manager/listner to track the cords
-     *          Based On: https://stackoverflow.com/questions/22323974/how-to-get-city-name-by-latitude-longitude-in-android
+     *          Based On: <a href="https://stackoverflow.com/questions/22323974/how-to-get-city-name-by-latitude-longitude-in-android">...</a>
      *
      * @param  cb : a call back function that will run when fetching the address succeeds/fails
      */
@@ -103,7 +103,7 @@ public final class locationServices {
             // Find coordinates of person, converts it to city, and updates city caption
             try {
                 List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-                if (addresses != null){
+                if (addresses != null && addresses.size() > 0){
                     city = addresses.get(0).getLocality();
                     cb.setValid();
                 }
@@ -136,7 +136,7 @@ public final class locationServices {
      * @return the city name
      * */
     public String getCity(){
-        return (city == null) ? null : new String(city);
+        return city;
     }
 
 }

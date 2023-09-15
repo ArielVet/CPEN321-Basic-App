@@ -188,33 +188,27 @@ public class ColourGame extends AppCompatActivity {
             int displayColour = colours[colourSequence.get(i)];
             String colourSymbol = this.colourSymbol[colourSequence.get(i)];
 
-            // Logic element that detects when last patern occurs
-            Boolean lastRound = (i == colourSequence.size() - 1);
+            // Logic element that detects when last pattern occurs
+            boolean lastRound = (i == colourSequence.size() - 1);
 
             /*  Delay Handler that will display the new colour every (COLOUR TIME + PAUSE TIME) units
                 Canvas will be displayColour for COLOUR time units, and THEN
                 Canvas will be white  for PAUSE time units before proceeding to next colour
              */
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    // Updates the colour to the current one in list
-                    canvas.setBackgroundTintList(ColorStateList.valueOf(displayColour));
-                    canvas.setText(colourSymbol);
+            handler.postDelayed(() -> {
+                // Updates the colour to the current one in list
+                canvas.setBackgroundTintList(ColorStateList.valueOf(displayColour));
+                canvas.setText(colourSymbol);
 
-                    // Update the canvas to white in COLOUR TIME units
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            canvas.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.white)));
-                            canvas.setText("");
+                // Update the canvas to white in COLOUR TIME units
+                handler.postDelayed(() -> {
+                    canvas.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.white)));
+                    canvas.setText("");
 
-                            // On the last pattern set playing to false
-                            if (lastRound) playingPattern = false;
+                    // On the last pattern set playing to false
+                    if (lastRound) playingPattern = false;
 
-                        }
-                    }, COLOUR_TIME);
-                }
+                }, COLOUR_TIME);
             }, (long) i * (COLOUR_TIME + PAUSE_TIME));
         }
     }

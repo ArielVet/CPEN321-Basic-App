@@ -1,21 +1,14 @@
 package com.arielvet.cpen321milestone1;
 
-
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -27,9 +20,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
 import org.json.JSONException;
@@ -40,8 +30,7 @@ import java.time.format.DateTimeFormatter;
 
 public class ServerInfo extends AppCompatActivity {
 
-    // CONSTANTS
-    private static final String TAG = "ServerInfo";
+    /* Constants */
     private static final String HOST = "http://10.0.2.2";
 //        private static final String HOST = "http://20.63.36.199";
     private static final Integer PORT = 8081;
@@ -145,6 +134,7 @@ public class ServerInfo extends AppCompatActivity {
             @SuppressLint("SetTextI18n")
             @Override
             public void onSuccess(String value) {
+                if (value == null) value = DEFAULT_TEXT;
                 textElement.setText(prefixText + " " + value);
             }
 
@@ -189,14 +179,11 @@ public class ServerInfo extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d(TAG, "Start");
         GoogleSignInAccount acc = GoogleSignIn.getLastSignedInAccount(this);
         if (acc == null){
-            Log.d(TAG, "Start-sign");
             signIn();
         }
         else{
-            Log.d(TAG, "start-done");
             updateUI(acc.getDisplayName());
         }
     }
@@ -206,7 +193,6 @@ public class ServerInfo extends AppCompatActivity {
      *          creates the client
      * */
     private void googleSetUp (){
-        Log.d(TAG, "SetUp");
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -215,15 +201,11 @@ public class ServerInfo extends AppCompatActivity {
 
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-        launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-            @Override
-            public void onActivityResult(ActivityResult result) {
-                if (result.getResultCode() == RC_SIGN_IN){
-                    Log.d(TAG, "TASK");
-                    Intent data = result.getData();
-                    Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-                    handleSignInResult(task);
-                }
+        launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if (result.getResultCode() == RC_SIGN_IN){
+                Intent data = result.getData();
+                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                handleSignInResult(task);
             }
         });
     }
@@ -233,7 +215,6 @@ public class ServerInfo extends AppCompatActivity {
      */
     private void signIn() {
         // If the signInIntent is successful it will return RC_SIGN_IN
-        Log.d(TAG, "SignIn");
         Intent intent = mGoogleSignInClient.getSignInIntent();
         launcher.launch(intent);
     }
@@ -243,18 +224,8 @@ public class ServerInfo extends AppCompatActivity {
      *          the function gets the associated account and calls getAccountInfo()
      */
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
-       Log.d(TAG, "HANDLE");
-        completedTask.addOnSuccessListener(new OnSuccessListener<GoogleSignInAccount>() {
-            @Override
-            public void onSuccess(GoogleSignInAccount googleSignInAccount) {
-                updateUI(googleSignInAccount.getDisplayName());
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d(TAG, "FAIL");
-            }
-        });
+        completedTask
+                .addOnSuccessListener(googleSignInAccount -> updateUI(googleSignInAccount.getDisplayName()));
     }
 
 }
