@@ -49,8 +49,6 @@ public class ColourGame extends AppCompatActivity {
 
         /* Fetch the buttons */
         canvas = findViewById(R.id.canvas);
-
-
         newGameButton = findViewById(R.id.new_game_button);
         colour1Button = findViewById(R.id.colour1_button);
         colour2Button = findViewById(R.id.colour2_button);
