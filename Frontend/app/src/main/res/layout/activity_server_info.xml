@@ -4,10 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
-    tools:context=".ServerInfo"
-    tools:layout_editor_absoluteX="-88dp"
-    tools:layout_editor_absoluteY="13dp">
+    android:background="@color/background"
+    tools:context=".ServerInfo">
 
     <TextView
         android:id="@+id/server_info_title"
