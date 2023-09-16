@@ -27,7 +27,7 @@ public class ColourGame extends AppCompatActivity {
     private int highScore;
 
     /* Boolean Logic Controllers */
-    private boolean gameOver = false;
+    private boolean gameOver = true;
     private boolean newHighScore = false;
     private boolean playingPattern = false;
 

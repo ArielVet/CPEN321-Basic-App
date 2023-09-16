@@ -31,8 +31,8 @@ import java.time.format.DateTimeFormatter;
 public class ServerInfo extends AppCompatActivity {
 
     /* Constants */
-    private static final String HOST = "http://10.0.2.2";
-//        private static final String HOST = "http://20.63.36.199";
+//    private static final String HOST = "http://10.0.2.2";
+        private static final String HOST = "http://20.63.36.199";
     private static final Integer PORT = 8081;
     private static final String DEFAULT_TEXT = "NOT FOUND";
 
