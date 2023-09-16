@@ -3,9 +3,10 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="background">#303030</color>
+    <color name="StatusBar">#1B1B1B</color>
 
     <!-- Main Buttons -->
-    <color name="main_buttons"> #00bcd4</color>
+    <color name="main_buttons">#00bcd4</color>
     <color name="main_buttons_pressed">#007787</color>
 
     <!-- Game Colours -->
