@@ -125,7 +125,7 @@ public class ColourGame extends AppCompatActivity {
                 // When it is released, update to white, no symbol, and run verifySequence
                 // to ensure its the right press
                 else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                    canvas.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.white)));
+                    canvas.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.canvas)));
                     canvas.setText("");
                     verifySequence(colourIndex);
                 }
@@ -202,7 +202,7 @@ public class ColourGame extends AppCompatActivity {
 
                 // Update the canvas to white in COLOUR TIME units
                 handler.postDelayed(() -> {
-                    canvas.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.white)));
+                    canvas.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.canvas)));
                     canvas.setText("");
 
                     // On the last pattern set playing to false
