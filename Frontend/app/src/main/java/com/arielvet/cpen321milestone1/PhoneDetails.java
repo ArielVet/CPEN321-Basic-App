@@ -11,7 +11,7 @@ import android.widget.TextView;
 public class PhoneDetails extends AppCompatActivity {
 
     /* Constant */
-    private final static String NoLoc = "Unknown";
+    private String DEFAULT;
 
     /* Text Elements */
     private TextView cityCap;
@@ -31,30 +31,32 @@ public class PhoneDetails extends AppCompatActivity {
         TextView manufacturerCap = findViewById(R.id.manuf_text);
         TextView modelCap = findViewById(R.id.model_text);
 
-        //Get the caption for city Location
-        cityCap_text = getString(R.string.curr_city_cap);
+        //Get the default TEXT
+        DEFAULT = getString(R.string.default_value);
 
+        // Location service declaration with a callback to say what happens
+        // when we find a valid city and when we don't
         locService = new locationServices(this, new locationServices.Callback() {
             @Override
             public void setValid() {
-                cityCap.setText(cityCap_text + " " + locService.getCity());
+                cityCap.setText(locService.getCity());
             }
 
             @Override
             public void setInvalid() {
-                cityCap.setText(cityCap_text + " " + NoLoc);
+                cityCap.setText(DEFAULT);
             }
         });
 
         // If We have access to locations, activate the location finder to find and set city caption,
         // else set it to unknown
         if (!locService.activateLocationUpdater()) {
-            cityCap.setText(cityCap_text + " " + NoLoc);
+            cityCap.setText(DEFAULT);
         }
 
         //Set Manufacturer and Phone Model Captions
-        manufacturerCap.setText(getString(R.string.manuf_cap) + " " + android.os.Build.MANUFACTURER);
-        modelCap.setText(getString(R.string.model_cap) + " " + android.os.Build.MODEL);
+        manufacturerCap.setText(android.os.Build.MANUFACTURER);
+        modelCap.setText(android.os.Build.MODEL);
 
     }
 
