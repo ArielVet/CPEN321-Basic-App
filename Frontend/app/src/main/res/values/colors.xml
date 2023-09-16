@@ -18,4 +18,21 @@
 
     <color name="top_buttons">#BE7B27</color>
     <color name="top_buttonsPress">#915E1E</color>
+
+    Version 1
+    <color name="main_buttons">#FF6200EA</color>
+    <color name="main_buttons_pressed">#4A00B1</color>
+
+<!--    Version 2 -->
+<!--    <color name="main_buttons">#FF5722</color>-->
+<!--    <color name="main_buttons_pressed">#B33D18</color>-->
+
+<!--    Version 3 -->
+<!--        <color name="main_buttons"> #00bcd4</color>-->
+<!--        <color name="main_buttons_pressed">#007787</color>-->
+
+    <!--    Version 4 -->
+<!--        <color name="main_buttons"> #6A7C94</color>-->
+<!--        <color name="main_buttons_pressed">#505D70</color>-->
+
 </resources>
