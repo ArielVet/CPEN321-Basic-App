@@ -62,22 +62,22 @@ public class ServerInfo extends AppCompatActivity {
 
         /* Sets Up and Updates the TextViews */
         TextView server_ip = findViewById(R.id.server_ip_text);
-        fetchAPIValue("/ipAddress", server_ip, getString(R.string.server_ip_cap));
+        fetchAPIValue("/ipAddress", server_ip);
 
         TextView client_ip = findViewById(R.id.client_ip_text);
-        client_ip.setText(getString(R.string.client_ip_cap) + " " + getClientIP());
+        client_ip.setText(getClientIP());
 
         TextView server_time = findViewById(R.id.server_time_text);
-        fetchAPIValue("/time", server_time, getString(R.string.server_time_cap));
+        fetchAPIValue("/time", server_time);
 
         TextView client_time = findViewById(R.id.client_time_text);
-        client_time.setText(getString(R.string.client_time_cap) + " " + getTime());
+        client_time.setText(getTime());
 
         TextView backend_Name = findViewById(R.id.backend_name_text);
-        fetchAPIValue("/name", backend_Name, getString(R.string.backend_name_cap));
+        fetchAPIValue("/name", backend_Name);
 
         TextView logged_in_name = findViewById(R.id.logged_in_name_text);
-        logged_in_name.setText(getString(R.string.logged_in_name_cap) + " " + accountName);
+        logged_in_name.setText(accountName);
     }
 
     /**
@@ -126,22 +126,21 @@ public class ServerInfo extends AppCompatActivity {
      *
      * @param endpoint : a String representing the targeted endpoint at the server
      * @param textElement : the TextView element we want to target
-     * @param prefixText : the already existing text on the screen (eg: "Server IP Address:")
      */
-    private void fetchAPIValue (String endpoint, TextView textElement, String prefixText){
+    private void fetchAPIValue (String endpoint, TextView textElement){
 
         makeGetRequest(HOST + ":" + PORT.toString() + endpoint, new Callback() {
             @SuppressLint("SetTextI18n")
             @Override
             public void onSuccess(String value) {
                 if (value == null) value = DEFAULT_TEXT;
-                textElement.setText(prefixText + " " + value);
+                textElement.setText(value);
             }
 
             @SuppressLint("SetTextI18n")
             @Override
             public void onError(){
-                textElement.setText(prefixText + " " + DEFAULT_TEXT);
+                textElement.setText(DEFAULT_TEXT);
             }
         });
 

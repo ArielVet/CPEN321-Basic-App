@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Button 4: Surprise Button is a Colour Game
-        Button game = findViewById(R.id.surprise_button);
+        Button game = findViewById(R.id.colour_game_button);
         game.setOnClickListener(view -> {
             // Launch the Google Maps Activity
             Intent colourGame = new Intent(MainActivity.this, ColourGame.class);
