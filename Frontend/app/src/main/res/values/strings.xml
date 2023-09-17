@@ -11,6 +11,7 @@
     <string name="curr_city_cap">Your Current City: </string>
     <string name="manuf_cap">Phone Manufacturer: </string>
     <string name="model_cap">Phone Model: </string>
+    <string name="loading_cap">Loading...</string>
 
     <string name="server_ip_cap">Server IP Address: </string>
     <string name="client_ip_cap">Client IP Address: </string>

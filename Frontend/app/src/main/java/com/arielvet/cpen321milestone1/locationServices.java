@@ -25,7 +25,7 @@ public final class locationServices {
     private LocationManager locationManager;
     private LocationListener locationListener;
 
-    private final static Long UpdateTime = 2L;
+    private final static Long UpdateTime = 1000L;
     private final static int  MinDistance = 0;
 
     private String city;
@@ -124,7 +124,7 @@ public final class locationServices {
     @SuppressLint("MissingPermission")
     public boolean activateLocationUpdater(){
         if (checkPerms()){
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, UpdateTime * 1000, MinDistance, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, UpdateTime, MinDistance, locationListener);
             return true;
         }
         return false;

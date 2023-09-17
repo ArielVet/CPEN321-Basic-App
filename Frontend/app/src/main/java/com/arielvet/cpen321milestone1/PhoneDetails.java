@@ -47,12 +47,7 @@ public class PhoneDetails extends AppCompatActivity {
                 cityCap.setText(DEFAULT);
             }
         });
-
-        // If We have access to locations, activate the location finder to find and set city caption,
-        // else set it to unknown
-        if (!locService.activateLocationUpdater()) {
-            cityCap.setText(DEFAULT);
-        }
+        locService.activateLocationUpdater();
 
         //Set Manufacturer and Phone Model Captions
         manufacturerCap.setText(android.os.Build.MANUFACTURER);
