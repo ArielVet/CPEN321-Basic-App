@@ -65,7 +65,7 @@ public class ServerInfo extends AppCompatActivity {
         fetchAPIValue("/ipAddress", server_ip);
 
         TextView client_ip = findViewById(R.id.client_ip_text);
-        client_ip.setText(getClientIP());
+        getClientIP(client_ip);
 
         TextView server_time = findViewById(R.id.server_time_text);
         fetchAPIValue("/time", server_time);
@@ -81,20 +81,34 @@ public class ServerInfo extends AppCompatActivity {
     }
 
     /**
-     * Purpose: retrieves the IPv4 address of the device
-     *          Based on: https://stackoverflow.com/questions/6064510/how-to-get-ip-address-of-the-device-from-code
+     * Purpose: Sets IPv4 Of device
+     *
+     *          Private IP based on Based on: https://stackoverflow.com/questions/6064510/how-to-get-ip-address-of-the-device-from-code
      *
      * @return the IP address
      */
-    private String getClientIP(){
-        Context context = getApplicationContext();
-        WifiManager wifiMan = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        int ipAddress = wifiMan.getConnectionInfo().getIpAddress();
+    private void getClientIP(TextView client_ip){
 
-        return String.valueOf(ipAddress & 255) + '.' +
-                ((ipAddress >> 8) & 255) + '.' +
-                ((ipAddress >> 16) & 255) + '.' +
-                ((ipAddress >> 24) & 255) + '.';
+        makeGetRequest("https://api.ipify.org/?format=json", "ip", new Callback() {
+            @Override
+            public void onSuccess(String val) {
+                client_ip.setText(val);
+            }
+
+            @Override
+            public void onError() {
+                Context context = getApplicationContext();
+                WifiManager wifiMan = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+                int ipAddress = wifiMan.getConnectionInfo().getIpAddress();
+
+                String ip = String.valueOf(ipAddress & 255) + '.' +
+                        ((ipAddress >> 8) & 255) + '.' +
+                        ((ipAddress >> 16) & 255) + '.' +
+                        ((ipAddress >> 24) & 255) + '.';
+
+                client_ip.setText(ip);
+            }
+        });
     }
 
     /**
@@ -128,8 +142,7 @@ public class ServerInfo extends AppCompatActivity {
      * @param textElement : the TextView element we want to target
      */
     private void fetchAPIValue (String endpoint, TextView textElement){
-
-        makeGetRequest(HOST + ":" + PORT.toString() + endpoint, new Callback() {
+        makeGetRequest(HOST + ":" + PORT.toString() + endpoint, "data", new Callback() {
             @SuppressLint("SetTextI18n")
             @Override
             public void onSuccess(String value) {
@@ -152,8 +165,9 @@ public class ServerInfo extends AppCompatActivity {
      *          Based On: https://www.geeksforgeeks.org/how-to-make-an-http-request-with-android/
      * @param url : the url we are making a GET request to
      * @param cb : the callback object that will be called to report the results of the API
+     * @param jsonData : the parameter that holds the data in the jsonObject
      */
-    private void makeGetRequest(String url, Callback cb) {
+    private void makeGetRequest(String url, String jsonData, Callback cb) {
         RequestQueue volleyQueue = Volley.newRequestQueue(ServerInfo.this);
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
@@ -162,7 +176,7 @@ public class ServerInfo extends AppCompatActivity {
                 null,
                 (Response.Listener<JSONObject>) response -> {
                     try {
-                        cb.onSuccess(response.getString("data"));
+                        cb.onSuccess(response.getString(jsonData));
                     } catch (JSONException e) {
                         cb.onError();
                     }

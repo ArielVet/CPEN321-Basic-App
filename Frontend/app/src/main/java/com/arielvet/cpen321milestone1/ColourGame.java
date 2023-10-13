@@ -20,7 +20,8 @@ public class ColourGame extends AppCompatActivity {
 
     /* Constants */
     private final int COLOUR_TIME = 500; // time it displays the colour in milliseconds
-    private final int PAUSE_TIME = 100; // time it waits between colours (aka white) in milliseconds
+    private final int PAUSE_TIME = 200; // time it waits between colours (aka white) in milliseconds
+    private final int START_TIME = 400; // The pause time before it starts to show colours
 
     /* Score Variables */
     private int score; // The score of the player
@@ -182,6 +183,10 @@ public class ColourGame extends AppCompatActivity {
      */
     private void playColourSequence(){
         playingPattern = true;
+        handler.postDelayed(() -> {
+            canvas.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.canvas)));
+            canvas.setText("");
+        }, START_TIME);
         for (int i = 0; i < colourSequence.size(); i++){
 
             //Get next colour from list
@@ -209,7 +214,7 @@ public class ColourGame extends AppCompatActivity {
                     if (lastRound) playingPattern = false;
 
                 }, COLOUR_TIME);
-            }, (long) i * (COLOUR_TIME + PAUSE_TIME));
+            }, (long) START_TIME + i * (COLOUR_TIME + PAUSE_TIME));
         }
     }
 
